@@ -3,26 +3,28 @@ create sequence IF NOT EXISTS master_seq START WITH 1000 INCREMENT BY 50;
 
 CREATE TABLE IF NOT EXISTS league_organizer (
     id bigint primary key,
-    name varcharchar(64),
+    name varchar(64),
     parent_id bigint,
-    start_date char(4),
+    start_date char(4)
 );
 
 CREATE TABLE IF NOT EXISTS league (
     id bigint primary key,
-    league_organizer_id bigint
+    league_organizer_id bigint,
     name varchar(64),
     season char(7),
     start_date char(4),
     end_date char(4),
     is_active bigint default 0,
+    constraint fk_league_2_league_organizer_by_league_organizer_id FOREIGN KEY (league_organizer_id) REFERENCES league_organizer(id)
 );
 
 CREATE TABLE IF NOT EXISTS team (
     id bigint primary key,
-    league_organizer_id bigint
+    league_organizer_id bigint,
     name varchar(64),
-    logo varchar(256)
+    logo varchar(256),
+    constraint fk_team_2_league_organizer_by_league_organizer_id FOREIGN KEY (league_organizer_id) REFERENCES league_organizer(id)
 );
 
 CREATE TABLE IF NOT EXISTS team_league (

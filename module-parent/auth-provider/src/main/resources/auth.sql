@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
   given_name varchar(64)
 );
 
-INSERT INTO users (id, agent_id, user_uuid, email, email_verified, password, form_password, locale, given_name, picture_url)
+INSERT INTO users (id, user_uuid, username, email, email_verified, password, form_password, locale, given_name, picture_url)
 select * from (select 1 id, 'admin' user_uuid, 'admin' username, 'rahmatii1366@gmail.com' email, 1 email_verified,
                       '$2a$10$J.qCx8tB1axgUJFqzrk6NupFsQ/ObT1tmhhVVf3MDewdumSwkxsDO' password, '$2a$10$J.qCx8tB1axgUJFqzrk6NupFsQ/ObT1tmhhVVf3MDewdumSwkxsDO' form_password, 'fa' locale,
                       'admin' given_name, 'https://lh3.googleusercontent.com/a-/AOh14Gg8K7kIHhlEo0-oJjPmGBG73ciHeRQnMFuRWRjQ4A=s96-c' picture_url
