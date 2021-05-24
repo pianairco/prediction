@@ -2,8 +2,8 @@ import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
-import {ServiceWorkerModule} from '@angular/service-worker';
-import {environment} from '../environments/environment';
+// import {ServiceWorkerModule} from '@angular/service-worker';
+// import {environment} from '../environments/environment';
 
 import {RootComponent} from './views/root/root.component';
 import {TopbarComponent} from './components/topbar/topbar.component';
@@ -55,14 +55,14 @@ import { SiteCategoryComponent } from './components/site-category/site-category.
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    SocialLoginModule,
+    // SocialLoginModule,
     TextMaskModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     AuthenticationService,
     InitializerService,
-    {
+    /*{
       provide: 'SocialAuthServiceConfig',
       useValue: {
         autoLogin: false,
@@ -75,7 +75,7 @@ import { SiteCategoryComponent } from './components/site-category/site-category.
           }
         ]
       } as SocialAuthServiceConfig,
-    },
+    },*/
     {
       provide: APP_INITIALIZER,
       useFactory: (initializerService: InitializerService) => () => initializerService.load(),

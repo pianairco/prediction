@@ -3,12 +3,12 @@ import axios from "axios";
 import {PianaStorageService} from "./piana-storage.service";
 import {LoadingService} from "./loading.service";
 import {ConstantService} from "./constant.service";
-import {GoogleLoginProvider, SocialAuthService} from "angularx-social-login";
+// import {GoogleLoginProvider, SocialAuthService} from "angularx-social-login";
 
-const googleLoginOptions = {
+/*const googleLoginOptions = {
   scope: 'profile email',
   prompt: 'select_account'
-}; // https://developers.google.com/api-client-library/javascript/reference/referencedocs#gapiauth2clientconfig
+}; // https://developers.google.com/api-client-library/javascript/reference/referencedocs#gapiauth2clientconfig*/
 
 @Injectable({
   providedIn: 'root'
@@ -17,20 +17,20 @@ export class AuthenticationService {
   appInfo = null;
 
   constructor(
-    private authService: SocialAuthService,
+    // private authService: SocialAuthService,
     private constantService: ConstantService,
     private loadingService: LoadingService,
     private pianaStorageService: PianaStorageService) { }
 
   async getToken () {
-    try {
+    /*try {
       console.log("service googleSignIn")
       let socialUser = await this.authService.signIn(GoogleLoginProvider.PROVIDER_ID, googleLoginOptions);
       let accessToken = socialUser['authToken'];
       return accessToken;
     } catch (e) {
 
-    }
+    }*/
   }
 
   async getAppInfo() {
@@ -49,7 +49,7 @@ export class AuthenticationService {
     }
   }
 
-  async googleSignIn (subDomain) {
+  /*async googleSignIn (subDomain) {
     try {
       console.log("service googleSignIn")
       let accessToken = null;
@@ -91,7 +91,7 @@ export class AuthenticationService {
       //on fail do something
     }
   }
-
+*/
   async login(loginInfo: {
     username: '',
     password: '',

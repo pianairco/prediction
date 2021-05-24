@@ -5,7 +5,7 @@ import {PianaStorageService} from "../../services/piana-storage.service";
 import {LoadingService} from "../../services/loading.service";
 import axios from "axios";
 import {ConstantService} from "../../services/constant.service";
-import {GoogleLoginProvider, SocialAuthService} from "angularx-social-login";
+// import {GoogleLoginProvider, SocialAuthService} from "angularx-social-login";
 import { isDevMode } from '@angular/core';
 
 @Component({
@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
   subDomain = null;
 
   constructor(
-    private authService: SocialAuthService,
+    // private authService: SocialAuthService,
     private pianaStorageService: PianaStorageService,
     private loadingService: LoadingService,
     private constantService: ConstantService,
@@ -90,7 +90,7 @@ export class LoginComponent implements OnInit {
   }
 
   async handleClickGoogleSignIn() {
-    try {
+    /*try {
       console.log("xxxxxxxxxx")
       this.loadingService.changeState(true);
       // this.$gAuth.getAuthCode().then((authCode) => {
@@ -119,6 +119,6 @@ export class LoginComponent implements OnInit {
       console.log(error)
     } finally {
       this.loadingService.changeState(false);
-    }
+    }*/
   }
 }
