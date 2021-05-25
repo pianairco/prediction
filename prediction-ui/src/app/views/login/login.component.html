@@ -1,102 +1,32 @@
-<div class="columns is-mobile is-centered mx-1 modal-background is-vcentered">
-  <div class="column is-half-desktop is-full-mobile my-1"
-       style="border: 1px solid rgb(127, 255, 212); border-radius: 12px; background-color: rgba(127, 255, 212, 0.5);">
-    <div class="columns is-mobile is-multiline">
-      <div class="column is-12">
-        <div class="field">
-          <label class="label">نام کاربری</label>
-          <div class="control">
-            <input class="input is-normal" type="text" placeholder="" [(ngModel)]="loginInfo.username">
-          </div>
-        </div>
-      </div>
-      <div class="column is-12">
-        <div class="field">
-          <label class="label">کلمه عبور</label>
-          <div class="control">
-            <input class="input is-normal" type="password" placeholder="" [(ngModel)]="loginInfo.password">
-          </div>
-        </div>
-      </div>
-      <div class="column is-12">
-        <div class="field">
-          <label class="label">کد امنیتی</label>
-          <div class="field has-addons">
-          <span class="control">
-            <input class="input is-normal" type="text" placeholder="" [(ngModel)]="loginInfo.captcha">
-          </span>
-            <span class="control">
-            <img [src]="getLinkPicture()" style="height: 31px"/>
-          </span>
-          </div>
-        </div>
-      </div>
-      <div class="column is-12">
-        <button class="button is-success is-fullwidth" (click)="login()">ورود</button>
-      </div>
-      <div class="column is-12">
-        <button class="button is-danger is-fullwidth" (click)="handleClickGoogleSignIn()">
-          <span>ورود با گوگل</span>
-          <!--            <span>Sign in with Google</span>-->
-          <span class="icon is-small">
-              <i class="fab fa-google"></i>
-            </span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+<main class="form-signin text-center">
+  <form>
+    <img class="mb-4" src="../../../assets/images/login-logo.png" alt="" width="72" height="57">
+    <h1 class="h3 mb-4 fw-normal">ورود به حساب کاربری</h1>
 
-<!--<div class="modal" [class.is-active]="showModal" >-->
-<!--  <div class="modal-background"></div>-->
-<!--  <div class="modal-card" >-->
-<!--&lt;!&ndash;    <header class="modal-card-head">&ndash;&gt;-->
-<!--&lt;!&ndash;      <p class="modal-card-title has-text-centered">ورود</p>&ndash;&gt;-->
-<!--&lt;!&ndash;    </header>&ndash;&gt;-->
-<!--    <section class="modal-card-body" style="min-height: 280px">-->
-<!--      <div class="columns is-mobile is-multiline">-->
-<!--        <div class="column is-12">-->
-<!--          <div class="field">-->
-<!--            <label class="label">نام کاربری</label>-->
-<!--            <div class="control">-->
-<!--              <input class="input is-normal" type="text" placeholder="" [(ngModel)]="loginInfo.username">-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div class="column is-12">-->
-<!--          <div class="field">-->
-<!--            <label class="label">کلمه عبور</label>-->
-<!--            <div class="control">-->
-<!--              <input class="input is-normal" type="password" placeholder="" [(ngModel)]="loginInfo.password">-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div class="column is-12">-->
-<!--          <div class="field">-->
-<!--            <label class="label">کد امنیتی</label>-->
-<!--            <div class="field has-addons">-->
-<!--          <span class="control">-->
-<!--            <input class="input is-normal" type="text" placeholder="" [(ngModel)]="loginInfo.captcha">-->
-<!--          </span>-->
-<!--              <span class="control">-->
-<!--            <img [src]="getLinkPicture()" style="height: 31px"/>-->
-<!--          </span>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div class="column is-12" style="padding: 2px">-->
-<!--          <button class="button is-success is-fullwidth" (click)="login()">ورود</button>-->
-<!--        </div>-->
-<!--        <div class="column is-12" style="padding: 2px">-->
-<!--          <button class="button is-danger is-fullwidth" (click)="handleClickGoogleSignIn()">-->
-<!--            <span>ورود با گوگل</span>-->
-<!--            &lt;!&ndash;            <span>Sign in with Google</span>&ndash;&gt;-->
-<!--            <span class="icon is-small">-->
-<!--              <i class="fab fa-google"></i>-->
-<!--            </span>-->
-<!--          </button>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </section>-->
-<!--  </div>-->
-<!--</div>-->
+    <div class="form-floating mb-2">
+      <input type="tel" class="form-control" id="floatingInput"
+             name="username"
+             [(ngModel)]="loginInfo.username">
+      <label for="floatingInput">شماره موبایل</label>
+    </div>
+    <div class="form-floating">
+      <input type="password" class="form-control" id="floatingPassword"
+             name="password"
+             [(ngModel)]="loginInfo.password">
+      <label for="floatingPassword">رمز ورود</label>
+    </div>
+
+    <div class="form-floating mb-2">
+      <input class="form-control" type="text" id="floatingCaptcha"
+             maxlength="5"
+             name="captcha"
+             [(ngModel)]="loginInfo.captcha">
+      <label for="floatingCaptcha">
+        <img [src]="getLinkPicture()" style="height: 31px"/>
+      </label>
+    </div>
+
+    <button class="w-100 btn btn-lg btn-primary" type="submit" (click)="login()">ورود</button>
+    <p class="mt-5 mb-3 text-muted">© پیش بینی نتایج فوتبال</p>
+  </form>
+</main>

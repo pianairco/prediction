@@ -3,10 +3,9 @@ HELP.md
 **/data/**/*.db
 **/*.mv.db
 **/*.trace.db
-shop-backend/src/main/resources/public/
-shop-backend/src/main/resources/control-panel/
-shop-backend/src/main/resources/multishop-ui/
-shop-backend/src/main/resources/multishop-cp/
+prediction-backend/src/main/resources/public/
+prediction-backend/src/main/resources/control-panel/
+prediction-backend/src/main/resources/prediction-ui/
 
 target/
 !.mvn/wrapper/maven-wrapper.jar

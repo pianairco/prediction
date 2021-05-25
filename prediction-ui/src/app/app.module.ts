@@ -1,10 +1,6 @@
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-
 import {AppRoutingModule} from './app-routing.module';
-import {ServiceWorkerModule} from '@angular/service-worker';
-import {environment} from '../environments/environment';
-
 import {RootComponent} from './views/root/root.component';
 import {TopbarComponent} from './components/topbar/topbar.component';
 import {FooterComponent} from './components/footer/footer.component';
@@ -19,7 +15,6 @@ import {AuthenticationService} from "./services/authentication-service.service";
 import {FormMakerComponent} from './components/form-maker/form-maker.component';
 import {NotificationComponent} from './components/notification/notification.component';
 import {LoadingComponent} from './components/loading/loading.component';
-import {GoogleLoginProvider, SocialAuthServiceConfig, SocialLoginModule} from 'angularx-social-login';
 import {PasswordSettingComponent} from './views/password-setting/password-setting.component';
 import {SiteSettingComponent} from './views/site-setting/site-setting.component';
 import {MySitesComponent} from './views/my-sites/my-sites.component';
@@ -28,6 +23,8 @@ import {TextMaskModule} from "angular2-text-mask";
 import {NumberOnlyDirective} from './directives/number-only.directive';
 import {PictureBoxComponent} from "./components/picture-box/picture-box.component";
 import { SiteCategoryComponent } from './components/site-category/site-category.component';
+import {ServiceWorkerModule} from "@angular/service-worker";
+import {environment} from "../environments/environment";
 
 @NgModule({
   declarations: [
@@ -55,14 +52,14 @@ import { SiteCategoryComponent } from './components/site-category/site-category.
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    SocialLoginModule,
+    // SocialLoginModule,
     TextMaskModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     AuthenticationService,
     InitializerService,
-    {
+    /*{
       provide: 'SocialAuthServiceConfig',
       useValue: {
         autoLogin: false,
@@ -75,7 +72,7 @@ import { SiteCategoryComponent } from './components/site-category/site-category.
           }
         ]
       } as SocialAuthServiceConfig,
-    },
+    },*/
     {
       provide: APP_INITIALIZER,
       useFactory: (initializerService: InitializerService) => () => initializerService.load(),

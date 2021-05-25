@@ -1,12 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+// import {GoogleLoginProvider, SocialAuthService} from "angularx-social-login";
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {AuthenticationService} from "../../services/authentication-service.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PianaStorageService} from "../../services/piana-storage.service";
 import {LoadingService} from "../../services/loading.service";
-import axios from "axios";
 import {ConstantService} from "../../services/constant.service";
-import {GoogleLoginProvider, SocialAuthService} from "angularx-social-login";
-import { isDevMode } from '@angular/core';
 
 @Component({
   selector: 'app-login',
@@ -14,19 +12,17 @@ import { isDevMode } from '@angular/core';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  showModal: boolean = true;
   loginInfo: {
     username: '',
     password: '',
-    captcha: '',
-    uuid: ''
+    captcha: ''
   }
   captchaCounter: number = 0;
   returnUrl: string;
   subDomain = null;
 
   constructor(
-    private authService: SocialAuthService,
+    // private authService: SocialAuthService,
     private pianaStorageService: PianaStorageService,
     private loadingService: LoadingService,
     private constantService: ConstantService,
@@ -49,9 +45,8 @@ export class LoginComponent implements OnInit {
     console.log(this.subDomain, this.returnUrl)
     this.loginInfo = {
       username: '',
-        password: '',
-        captcha: '',
-        uuid: ''
+      password: '',
+      captcha: ''
     }
 
     // axios.get('resources/captcha', { headers: { withCredentials: true } })
@@ -67,7 +62,8 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    let promise = this.authenticationService.login(this.loginInfo, this.subDomain);
+    console.log(this.loginInfo)
+    let promise = this.authenticationService.login(this.loginInfo);
     promise.then(appInfo => {
       if(appInfo === "close") {
         console.log("window force closed!")
@@ -80,17 +76,10 @@ export class LoginComponent implements OnInit {
       console.log(err);
       this.captchaCounter++;
     });
-    // axios.post('api/sign-in', this.loginInfo, {headers: {}})
-    //   .then(res => {
-    //     console.log(res);
-    //   }, err => {
-    //     this.timeStamp = this.timeStamp + 1;
-    //     console.log(err);
-    //   });
   }
 
   async handleClickGoogleSignIn() {
-    try {
+    /*try {
       console.log("xxxxxxxxxx")
       this.loadingService.changeState(true);
       // this.$gAuth.getAuthCode().then((authCode) => {
@@ -119,6 +108,6 @@ export class LoginComponent implements OnInit {
       console.log(error)
     } finally {
       this.loadingService.changeState(false);
-    }
+    }*/
   }
 }

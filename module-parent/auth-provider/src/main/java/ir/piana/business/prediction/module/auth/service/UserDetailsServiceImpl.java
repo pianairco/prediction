@@ -1,8 +1,9 @@
 package ir.piana.business.prediction.module.auth.service;
 
-import ir.piana.business.prediction.common.data.cache.AppDataCache;
-import ir.piana.business.prediction.module.auth.data.entity.GoogleUserEntity;
-import ir.piana.business.prediction.module.auth.data.repository.GoogleUserRepository;
+import ir.piana.business.prediction.module.auth.data.entity.UserEntity;
+import ir.piana.business.prediction.module.auth.data.entity.UserRolesEntity;
+import ir.piana.business.prediction.module.auth.data.repository.UserRepository;
+import ir.piana.business.prediction.module.auth.data.repository.UserRolesRepository;
 import ir.piana.business.prediction.module.auth.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,22 +21,22 @@ import java.util.stream.Collectors;
 @Component("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
-    private GoogleUserRepository googleUserRepository;
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserRolesRepository userRolesRepository;
 
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    private AppDataCache appDataCache;
-
     @Override
     public UserDetails loadUserByUsername(String encodedUsername) throws UsernameNotFoundException {
-        String username = null;
+        String mobile = null;
         boolean isForm = false;
         String[] split = null;
         if(encodedUsername.contains(":")) {
             split = encodedUsername.split(":");
-            username = new String(Base64.getDecoder().decode(username = split[split.length - 1]));
+            mobile = new String(Base64.getDecoder().decode(split[split.length - 2]));
             if(split[0].equalsIgnoreCase("form")) {
                 isForm = true;
             } else {
@@ -43,17 +44,27 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             }
         }
 
-        GoogleUserEntity googleUserEntity = googleUserRepository.findByEmail(username);
-        if (googleUserEntity == null) {
-            throw new UsernameNotFoundException(encodedUsername);
+        UserEntity byMobile = userRepository.findByMobile(mobile);
+        if (byMobile == null) {
+            byMobile = UserEntity.builder()
+                    .username(mobile)
+                    .mobile(mobile)
+                    .password(passwordEncoder.encode(split[split.length - 1]))
+                    .formPassword(passwordEncoder.encode(split[split.length - 1])).build();
+            userRepository.save(byMobile);
+            userRolesRepository.save(UserRolesEntity.builder()
+                    .userId(byMobile.getId())
+                    .roleName("ROLE_USER")
+                    .build());
+            byMobile = userRepository.findByMobile(byMobile.getMobile());
         }
-        List<GrantedAuthority> authorities = googleUserEntity.getUserRolesEntities().stream()
+        List<GrantedAuthority> authorities = byMobile.getUserRolesEntities().stream()
                 .map(e -> new SimpleGrantedAuthority(e.getRoleName())).collect(Collectors.toList());
 
         authorities.add(new SimpleGrantedAuthority("ROLE_SITE_OWNER"));
         authorities.add(new SimpleGrantedAuthority("ROLE_AUTHENTICATED"));
-        return new UserModel(googleUserEntity.getEmail(),
-                isForm ? googleUserEntity.getFormPassword() : googleUserEntity.getPassword(),
-                authorities, googleUserEntity);
+        return new UserModel(byMobile.getMobile(),
+                isForm ? byMobile.getFormPassword() : byMobile.getPassword(),
+                authorities, byMobile);
     }
 }

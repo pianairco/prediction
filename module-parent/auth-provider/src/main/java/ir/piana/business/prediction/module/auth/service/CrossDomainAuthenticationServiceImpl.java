@@ -1,6 +1,6 @@
 package ir.piana.business.prediction.module.auth.service;
 
-import ir.piana.business.prediction.module.auth.data.entity.GoogleUserEntity;
+import ir.piana.business.prediction.module.auth.data.entity.UserEntity;
 import ir.piana.business.prediction.module.auth.model.LoginInfo;
 import ir.piana.business.prediction.module.auth.model.SubDomainInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +57,7 @@ public class CrossDomainAuthenticationServiceImpl implements CrossDomainAuthenti
     }
 
     @Override
-    public boolean addPrincipal(String uuid, GoogleUserEntity googleUserEntity) {
+    public boolean addPrincipal(String uuid, UserEntity googleUserEntity) {
         SubDomainInfo subDomainInfo = subDomainInfoMap.get(uuid);
         if (subDomainInfo == null)
             return false;

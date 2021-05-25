@@ -76,8 +76,8 @@ public class MultiTenantJpaConfiguration {
 	@DependsOn("supportExecutor")
 	public Map<String, HikariDataSource> datasources(SpecificSchemaQueryExecutor supportExecutor) throws SQLException {
 		LinkedHashMap<String, HikariDataSource> datasourceMap = new LinkedHashMap<>();
-		String domain = supportExecutor.queryString("select param_value from app_info where app_param = 'domain'");
-		datasourceMap.put(domain, supportExecutor.getDatasource());
+//		String domain = supportExecutor.queryString("select param_value from app_info where app_param = 'domain'");
+//		datasourceMap.put(domain, supportExecutor.getDatasource());
 		datasourceMap.put("support", supportExecutor.getDatasource());
 		return datasourceMap;
 	}
