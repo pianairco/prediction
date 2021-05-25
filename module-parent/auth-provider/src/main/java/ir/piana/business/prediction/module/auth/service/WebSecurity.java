@@ -19,6 +19,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.Arrays;
+
 @Configuration
 @EnableWebSecurity
 @Profile("production")
@@ -67,6 +69,22 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     //https://www.logicbig.com/tutorials/spring-framework/spring-boot/jdbc-security-with-h2-console.html
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        if(Arrays.stream(env.getActiveProfiles()).anyMatch(p -> "develop".matches(p))) {
+            http.csrf().disable()
+//        http.cors().and().csrf().disable()
+                    .authorizeRequests()
+                    .anyRequest().permitAll()
+                    .and()
+                    .headers().frameOptions().disable()
+                    .and()
+                    .addFilterBefore(new JWTAuthenticationFilter("/api/sign-in",
+                                    authenticationManager(), bCryptPasswordEncoder,
+                                    googleUserRepository,
+                                    crossDomainAuthenticationService, appDataCache, env),
+                            UsernamePasswordAuthenticationFilter.class)
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+            return;
+        }
         http.csrf().disable()
 //        http.cors().and().csrf().disable()
                 .authorizeRequests()

@@ -1,1 +1,6 @@
 POST http://localhost/test/api/zarinpal/test/redirect
+
+###
+GET https://piana.ir:8443/api/module/competition/weekly-matches
+
+###

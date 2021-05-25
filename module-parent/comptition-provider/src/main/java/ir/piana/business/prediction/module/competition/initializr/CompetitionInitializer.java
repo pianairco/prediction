@@ -1,4 +1,4 @@
-package ir.piana.business.prediction.module.auth.initializr;
+package ir.piana.business.prediction.module.competition.initializr;
 
 import ir.piana.business.prediction.common.BaseInitializer;
 import ir.piana.business.prediction.common.data.component.SpecificSchemaQueryExecutorProvider;
@@ -13,7 +13,7 @@ import java.io.InputStream;
 @Configuration
 @Slf4j
 @DependsOn("SpecificSchemaQueryExecutorProvider")
-public class PredictionInitializer extends BaseInitializer {
+public class CompetitionInitializer extends BaseInitializer {
     @Autowired
     public void setQueryExecutorProvider(
             SpecificSchemaQueryExecutorProvider executorProvider) {
@@ -28,12 +28,12 @@ public class PredictionInitializer extends BaseInitializer {
 
     @Override
     public InputStream getSupportSql() {
-        return PredictionInitializer.class.getResourceAsStream("/comptition.sql");
+        return CompetitionInitializer.class.getResourceAsStream("/competition.sql");
     }
 
     @Override
     public InputStream getAllSchemaSql() {
         return null;
-//        return AuthInitializer.class.getResourceAsStream("/comptition.sql");
+//        return AuthInitializer.class.getResourceAsStream("/competition.sql");
     }
 }
