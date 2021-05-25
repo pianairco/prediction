@@ -3,8 +3,8 @@ package ir.piana.business.prediction.module.auth.rest;
 import ir.piana.business.prediction.common.data.cache.AppDataCache;
 import ir.piana.business.prediction.common.exceptions.HttpCommonRuntimeException;
 import ir.piana.business.prediction.module.auth.action.AuthAction;
-import ir.piana.business.prediction.module.auth.data.entity.GoogleUserEntity;
-import ir.piana.business.prediction.module.auth.data.repository.GoogleUserRepository;
+import ir.piana.business.prediction.module.auth.data.entity.UserEntity;
+import ir.piana.business.prediction.module.auth.data.repository.UserRepository;
 import ir.piana.business.prediction.module.auth.model.AppInfo;
 import ir.piana.business.prediction.module.auth.model.LoginInfo;
 import ir.piana.business.prediction.module.auth.model.SiteInfo;
@@ -36,7 +36,7 @@ public class AuthRest {
     private AuthAction authAction;
 
     @Autowired
-    private GoogleUserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -174,7 +174,7 @@ public class AuthRest {
             HttpServletResponse response,
             @RequestBody LoginInfo loginInfo,
             HttpSession session) throws IOException {
-        GoogleUserEntity byEmail = userRepository.findByEmail(loginInfo.getUsername());
+        UserEntity byEmail = userRepository.findByEmail(loginInfo.getUsername());
         Captcha sessionCaptcha = (Captcha)session.getAttribute("simpleCaptcha");
         if(byEmail != null &&
                 sessionCaptcha != null &&
@@ -197,7 +197,7 @@ public class AuthRest {
             @RequestBody Map<String, String> body) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() != null && authentication.getPrincipal() instanceof UserModel) {
-            GoogleUserEntity userEntity = ((UserModel) authentication.getPrincipal()).getUserEntity();
+            UserEntity userEntity = ((UserModel) authentication.getPrincipal()).getUserEntity();
             if(crossDomainAuthenticationService.addPrincipal(
                     body.get("uuid"), ((UserModel) authentication.getPrincipal()).getUserEntity())) {
                 return ResponseEntity.ok().build();

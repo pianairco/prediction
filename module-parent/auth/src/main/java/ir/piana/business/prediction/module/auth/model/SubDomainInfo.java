@@ -1,6 +1,6 @@
 package ir.piana.business.prediction.module.auth.model;
 
-import ir.piana.business.prediction.module.auth.data.entity.GoogleUserEntity;
+import ir.piana.business.prediction.module.auth.data.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +15,6 @@ public class SubDomainInfo {
     private String accessToken;
     private String loginType;
     private LoginInfo loginInfo;
-    private GoogleUserEntity principal;
+    private UserEntity principal;
     private Object sessionCaptcha;
 }

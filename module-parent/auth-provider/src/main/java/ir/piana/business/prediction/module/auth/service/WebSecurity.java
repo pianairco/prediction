@@ -1,7 +1,7 @@
 package ir.piana.business.prediction.module.auth.service;
 
 import ir.piana.business.prediction.common.data.cache.AppDataCache;
-import ir.piana.business.prediction.module.auth.data.repository.GoogleUserRepository;
+import ir.piana.business.prediction.module.auth.data.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -53,7 +53,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 //    private CustomAuthenticationProvider authenticationProvider;
 
     @Autowired
-    private GoogleUserRepository googleUserRepository;
+    private UserRepository googleUserRepository;
 
     @Autowired
     private AppDataCache appDataCache;

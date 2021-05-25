@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class GoogleUserEntity {
+public class UserEntity {
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "master_seq")
     @Column(name = "ID")

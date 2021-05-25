@@ -1,12 +1,10 @@
 package ir.piana.business.prediction.module.auth.action;
 
-import ir.piana.business.prediction.common.data.cache.AppDataCache;
 import ir.piana.business.prediction.common.dev.sqlrest.AjaxController;
-import ir.piana.business.prediction.module.auth.data.entity.GoogleUserEntity;
+import ir.piana.business.prediction.module.auth.data.entity.UserEntity;
 import ir.piana.business.prediction.module.auth.model.AppInfo;
 import ir.piana.business.prediction.module.auth.model.SiteInfo;
 import ir.piana.business.prediction.module.auth.model.UserModel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,11 +16,6 @@ import java.util.function.BiFunction;
 
 @Service("auth")
 public class AuthAction extends AjaxController.Action {
-
-    @Autowired
-    private AppDataCache appDataCache;
-
-
     public BiFunction<HttpServletRequest, Map<String, Object>, ResponseEntity> appInfo = (request, body) -> {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         // ToDo => appInfo setter
@@ -31,7 +24,7 @@ public class AuthAction extends AjaxController.Action {
 
         AppInfo appInfo = null;
         if(authentication.getPrincipal() instanceof UserModel) {
-            GoogleUserEntity userEntity = ((UserModel) authentication.getPrincipal()).getUserEntity();
+            UserEntity userEntity = ((UserModel) authentication.getPrincipal()).getUserEntity();
             appInfo = AppInfo.builder()
                     .isLoggedIn(true)
                     .isAdmin(authentication.getAuthorities().stream()
