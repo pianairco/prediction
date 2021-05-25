@@ -1,1 +1,5 @@
-POST http://localhost/test/api/zarinpal/test/redirect
+POST https://piana.ir:8443/api/app-info
+content-type: application/json;charset=UTF-8
+
+{
+}

@@ -48,21 +48,6 @@ export class AuthGuard implements CanActivate {
         // this.router.navigate(['/home'], { queryParams: { returnUrl: state.url }});
         return true;
       } else {
-        let subDomain = state.root.queryParams['sub-domain'];
-        if(subDomain) {
-          console.log("has sub-domain", subDomain);
-          axios.post(this.constantService.getRemoteServer() + '/api/sign-in/sub-domain/set-principal',
-            { uuid: subDomain},
-            { headers: { 'Content-Type': 'APPLICATION/JSON', 'auth-type': 'principal' } }).then(
-              res => {
-                if(res.status == 200) {
-                  window.close();
-                  return true;
-                }
-              }, err => {
-
-            });
-        }
         this.router.navigate(['/tile/home']);
         return false;
       }

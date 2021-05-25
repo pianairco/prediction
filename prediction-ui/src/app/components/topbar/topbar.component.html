@@ -1,79 +1,51 @@
-<nav class="navbar is-light" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a class="navbar-item" href="#" >
+<div style="min-height: 58px; margin-bottom: 8px;"></div>
+<nav class="navbar fixed-top navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
       <img src="../../assets/images/topbar-logo.png" width="112" height="28">
     </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/tile/home']"
+             routerLinkActive="menu-active-link">خانه</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/tile/prediction']"
+             routerLinkActive="menu-active-link">پیش بینی</a>
+        </li>
+        <!--<li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink"
+             role="button" data-bs-toggle="dropdown" aria-expanded="false">راهبری</a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <li>
+              <a class="dropdown-item" [routerLink]="['/tile/site-setting']" routerLinkActive="menu-active-link">نمایش سایت ها</a>
+            </li>
+          </ul>
+        </li>-->
+      </ul>
 
-    <a #toggled (click)="forceShowClick()" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-
-  <div id="navbarBasicExample" [class.is-active]="istoggled && forceShow" class="navbar-menu" >
-    <div class="navbar-start">
-      <a class="navbar-item" [routerLink]="['/tile/home']">
-        خانه
-      </a>
-      <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">راهبری</a>
-
-        <div class="navbar-dropdown">
-          <a class="navbar-item" [routerLink]="['/tile/site-setting']" routerLinkActive="menu-active-link">نمایش سایت ها</a>
-        </div>
-      </div>
-
-<!--      <div class="navbar-item has-dropdown is-hoverable">-->
-<!--        <a class="navbar-link">تنظیمات</a>-->
-
-<!--        <div class="navbar-dropdown">-->
-<!--          <a class="navbar-item" [routerLink]="['fund-settings', 'page-accessibility']">دسترسی صفحات</a>-->
-<!--          <a class="navbar-item" [routerLink]="['fund-settings', 'fund-settings']">تنظیمات صندوق</a>-->
-<!--          <a class="navbar-item">تنظیمات وب سرویس</a>-->
-<!--        </div>-->
-<!--      </div>-->
-
-<!--      <div class="navbar-item has-dropdown is-hoverable">-->
-<!--        <a class="navbar-link">گزارشات</a>-->
-
-<!--        <div class="navbar-dropdown">-->
-<!--          <a class="navbar-item">وضعیت سبد</a>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!--<ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink2"
+             role="button" data-bs-toggle="dropdown" aria-expanded="false">مدیریت کاربران</a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
+            <li>
+              <a class="dropdown-item" routerLinkActive="menu-active-link">اطلاعات کاربری</a>
+            </li>
+            <li>
+              <a class="dropdown-item" [routerLink]="['/tile/password-setting']"
+                   routerLinkActive="menu-active-link">تغییر رمز</a>
+            </li>
+            <li>
+              <a class="dropdown-item" [routerLink]="['/logout']" routerLinkActive="menu-active-link">خروج</a>
+            </li>
+          </ul>
+        </li>
+      </ul>-->
     </div>
-
-    <div class="navbar-end">
-      <div class="navbar-start">
-        <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link">مدیریت کاربری</a>
-
-          <div class="navbar-dropdown" style="left: 0px; right: unset">
-            <a class="navbar-item">
-              اطلاعات کاربری
-            </a>
-            <a class="navbar-item" [routerLink]="['/tile/password-setting']">
-              تغییر رمز
-            </a>
-            <hr class="navbar-divider">
-            <a class="navbar-item" [routerLink]="['/logout']">
-              خروج
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-<!--    <div class="navbar-end">-->
-<!--      <div class="navbar-item">-->
-<!--        <div class="buttons">-->
-<!--          <a class="button is-primary">-->
-<!--            <strong>Sign up</strong>-->
-<!--          </a>-->
-<!--          <button class="button is-light" (click)="loginClick()">-->
-<!--            Log in-->
-<!--          </button>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
   </div>
 </nav>

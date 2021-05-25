@@ -30,12 +30,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String encodedUsername) throws UsernameNotFoundException {
-        String username = null;
+        String mobile = null;
         boolean isForm = false;
         String[] split = null;
         if(encodedUsername.contains(":")) {
             split = encodedUsername.split(":");
-            username = new String(Base64.getDecoder().decode(username = split[split.length - 1]));
+            mobile = new String(Base64.getDecoder().decode(split[split.length - 1]));
             if(split[0].equalsIgnoreCase("form")) {
                 isForm = true;
             } else {
@@ -43,7 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             }
         }
 
-        GoogleUserEntity googleUserEntity = googleUserRepository.findByEmail(username);
+        GoogleUserEntity googleUserEntity = googleUserRepository.findByMobile(mobile);
         if (googleUserEntity == null) {
             throw new UsernameNotFoundException(encodedUsername);
         }

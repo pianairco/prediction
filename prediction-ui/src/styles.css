@@ -4,7 +4,10 @@
 }
 
 .menu-active-link {
-  background-color: #ffe3ed;
+  padding-right: 10px !important;
+  padding-left: 10px !important;
+  border-radius: 8px;
+  background-color: #d3d3d4;
 }
 
 .active-link {

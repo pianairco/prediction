@@ -5,4 +5,5 @@ import ir.piana.business.prediction.module.auth.data.entity.GoogleUserEntity;
 
 public interface GoogleUserRepository extends JpaRepository<GoogleUserEntity, Long> {
     GoogleUserEntity findByEmail(String email);
+    GoogleUserEntity findByMobile(String mobile);
 }

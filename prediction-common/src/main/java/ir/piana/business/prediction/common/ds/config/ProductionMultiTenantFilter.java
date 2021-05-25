@@ -60,7 +60,7 @@ public class ProductionMultiTenantFilter extends OncePerRequestFilter {
         request.setAttribute("host", host);
 
         request.setAttribute("resource-prefix", "prediction-ui/");
-
+        filterChain.doFilter(request, response);
         /*if (host == null) {
             throw new TenantNotSpecifiedException();
         } else if (host.equalsIgnoreCase(appDataCache.getDomain())) {
