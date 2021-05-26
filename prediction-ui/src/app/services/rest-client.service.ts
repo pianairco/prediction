@@ -9,7 +9,8 @@ import {log} from "util";
 export class RestClientService {
   ajaxUrlMap = {
     site: 'api/modules/site',
-    siteCategory: 'api/modules/site/category'
+    siteCategory: 'api/modules/site/category',
+    weeklyMatches: 'api/modules/competition/weekly-matches'
   }
 
   remoteServer: string = "";
@@ -27,5 +28,13 @@ export class RestClientService {
 
   getSiteCategories() {
     return this.ajaxCallService.read(this.ajaxUrlMap.siteCategory + '/root');
+  }
+
+  getOpenWeeklyMatches() {
+    return this.ajaxCallService.read(this.ajaxUrlMap.weeklyMatches + '/open');
+  }
+
+  getWeeklyMatchesCompetitions(weeklyMatchesId: number) {
+    return this.ajaxCallService.read(this.ajaxUrlMap.weeklyMatches + '/competitions?weeklyMatchesId=' + weeklyMatchesId);
   }
 }

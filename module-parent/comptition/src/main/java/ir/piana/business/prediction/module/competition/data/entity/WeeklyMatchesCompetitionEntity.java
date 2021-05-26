@@ -22,5 +22,5 @@ public class WeeklyMatchesCompetitionEntity {
     @Column(name = "host_team_id")
     private long hostTeamId;
     @Column(name = "guest_team_id")
-    private String guestTeamId;
+    private long guestTeamId;
 }

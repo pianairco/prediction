@@ -10,6 +10,7 @@ import {PasswordSettingComponent} from "./views/password-setting/password-settin
 import {SiteSettingComponent} from "./views/site-setting/site-setting.component";
 import {MySitesComponent} from "./views/my-sites/my-sites.component";
 import {NewSiteComponent} from "./views/new-site/new-site.component";
+import {WeeklyMatchesComponent} from "./views/weekly-matches-view/weekly-matches-view.component";
 
 const routes: Routes = [
   {
@@ -19,6 +20,7 @@ const routes: Routes = [
           { path: 'tile', component: TileComponent, children:[
               { path: '', redirectTo: '/home', pathMatch: 'full' },
               { path: 'home', component: HomeViewComponent },
+              { path: 'weekly-matches/:weeklyMatchesId', component: WeeklyMatchesComponent },
               { path: 'add-user/:groupName/:formName', component: FormMakerComponent },
               { path: 'password-setting', component: PasswordSettingComponent },
               { path: 'site-setting', component: SiteSettingComponent, children:[

@@ -25,16 +25,18 @@ import {PictureBoxComponent} from "./components/picture-box/picture-box.componen
 import { SiteCategoryComponent } from './components/site-category/site-category.component';
 import {ServiceWorkerModule} from "@angular/service-worker";
 import {environment} from "../environments/environment";
+import {WeeklyMatchesComponent} from "./views/weekly-matches-view/weekly-matches-view.component";
 
 @NgModule({
   declarations: [
     RootComponent,
     TopbarComponent,
     FooterComponent,
-    HomeViewComponent,
-    LoginComponent,
     PageNotFoundComponent,
+    LoginComponent,
     TileComponent,
+    HomeViewComponent,
+    WeeklyMatchesComponent,
     FormMakerComponent,
     NotificationComponent,
     LoadingComponent,
