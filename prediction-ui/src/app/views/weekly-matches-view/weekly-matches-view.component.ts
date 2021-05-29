@@ -1,16 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {RestClientService} from "../../services/rest-client.service";
-import {SiteInfo} from "../new-site/new-site.component";
 import {PianaStorageService} from "../../services/piana-storage.service";
 import {SiteCategoryService} from "../../services/site-category.service";
-import {WeeklyMatchesService} from "../../services/weekly-mathes.service";
 import {WeeklyMatchesCompetitionService} from "../../services/weekly-mathes-competition.service";
 import {ActivatedRoute} from "@angular/router";
-
-interface Food {
-  value: string;
-  viewValue: string;
-}
+import {ScreenSizeService} from "../../services/screen-size.service";
 
 @Component({
   selector: 'app-weekly-matches-view',
@@ -22,6 +16,7 @@ export class WeeklyMatchesComponent implements OnInit {
   private subWeeklyMatchesId: any;
 
   constructor(
+    public resizeService: ScreenSizeService,
     private route: ActivatedRoute,
     private pianaStorageService: PianaStorageService,
     private restClientService: RestClientService,

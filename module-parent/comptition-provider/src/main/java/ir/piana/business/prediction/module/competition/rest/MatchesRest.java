@@ -1,21 +1,22 @@
 package ir.piana.business.prediction.module.competition.rest;
 
+import ir.piana.business.prediction.common.model.ResponseModel;
+import ir.piana.business.prediction.module.auth.data.entity.UserEntity;
+import ir.piana.business.prediction.module.auth.model.UserModel;
 import ir.piana.business.prediction.module.competition.data.entity.*;
-import ir.piana.business.prediction.module.competition.data.repository.SeasonRepository;
-import ir.piana.business.prediction.module.competition.data.repository.TeamRepository;
-import ir.piana.business.prediction.module.competition.data.repository.WeeklyMatchesCompetitionRepository;
-import ir.piana.business.prediction.module.competition.data.repository.WeeklyMatchesRepository;
+import ir.piana.business.prediction.module.competition.data.repository.*;
+import ir.piana.business.prediction.module.competition.model.PredictingMatchesModel;
 import ir.piana.business.prediction.module.competition.model.WeeklyMatchCompetitionModel;
 import ir.piana.business.prediction.module.competition.model.WeeklyMatchModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/modules/competition/weekly-matches")
 public class MatchesRest {
+    @Autowired
+    private WeeklyMatchesCompetitionPredictionRepository competitionPredictionRepository;
+
     @Autowired
     private WeeklyMatchesRepository weeklyMatchesRepository;
 
@@ -84,5 +88,52 @@ public class MatchesRest {
             }
         }
         return ResponseEntity.ok(competitionModels);
+    }
+
+    @PostMapping(path = "predicting-matches",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseModel> predictingMatches(
+            @RequestBody List<PredictingMatchesModel> predictingMatchesModels) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity userEntity = null;
+        if(authentication.getPrincipal() instanceof UserModel) {
+            userEntity = ((UserModel) authentication.getPrincipal()).getUserEntity();
+        }
+        List<WeeklyMatchesCompetitionPredictionEntity> result = new ArrayList<>();
+        if(userEntity != null) {
+            List<Long> collect = predictingMatchesModels.stream()
+                    .map(p -> p.getWeeklyMatchId()).collect(Collectors.toList());
+            List<WeeklyMatchesCompetitionPredictionEntity> registeredPredictions = competitionPredictionRepository
+                    .findRegisteredByUserAndCompetition(userEntity.getId(), collect);
+            if(registeredPredictions != null) {
+                for(WeeklyMatchesCompetitionPredictionEntity registeredPrediction: registeredPredictions) {
+                    Optional<PredictingMatchesModel> first = predictingMatchesModels.stream()
+                            .filter(p -> p.getPredictionId() == registeredPrediction.getId()).findFirst();
+                    if (first.isPresent()) {
+                        registeredPrediction.setHostGoals(first.get().getHostGoals());
+                        registeredPrediction.setGuestGoals(first.get().getGuestGoals());
+                        result.add(registeredPrediction);
+                    }
+                }
+            }
+        }
+
+        List<Long> regiteredIds = result.stream().map(p -> p.getId()).collect(Collectors.toList());
+        List<PredictingMatchesModel> remainedPredictionModels = predictingMatchesModels.stream()
+                .filter(p -> !regiteredIds.contains(p.getPredictionId()))
+                .collect(Collectors.toList());
+
+        for(PredictingMatchesModel model: remainedPredictionModels) {
+            result.add(WeeklyMatchesCompetitionPredictionEntity.builder()
+                    .userEntity(userEntity)
+                    .competitionEntity(weeklyMatchesCompetitionRepository.findById(model.getCompetitionId()).get())
+                    .hostGoals(model.getHostGoals())
+                    .guestGoals(model.getGuestGoals())
+                    .build());
+        }
+
+        competitionPredictionRepository.saveAll(result);
+        return ResponseEntity.ok(ResponseModel.builder().code(0).build());
     }
 }

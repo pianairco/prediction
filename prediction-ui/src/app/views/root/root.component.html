@@ -7,8 +7,9 @@
 <!-- * * * * * * * * * Delete the template below * * * * * * * * * * -->
 <!-- * * * * * * * to get started with your project! * * * * * * * * -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<app-loading></app-loading>
+<app-loading class="d-xl"></app-loading>
 <router-outlet></router-outlet>
+<div *ngFor="let s of sizes" class="{{s.css + ' ' + (prefix + s.id) }}">&nbsp;</div>
 
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * * The content above * * * * * * * * * * * -->

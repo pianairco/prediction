@@ -1,1 +1,8 @@
+.match-selector:hover {
+  background-color: #f8f8e8;
+}
 
+.match-selector {
+  border-bottom: 1px solid #e7c11c;
+  border-bottom-left-radius: 80px;
+}

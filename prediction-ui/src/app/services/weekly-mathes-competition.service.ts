@@ -44,4 +44,6 @@ export class WeeklyMatchCompetitionModel {
   guestTeamId: number;
   guestTeamName: string;
   guestTeamLogo: string;
+  hostGoal: number;
+  guestGoal: number;
 };

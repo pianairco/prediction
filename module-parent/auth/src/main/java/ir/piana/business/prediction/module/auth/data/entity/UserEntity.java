@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class UserEntity {
-    @javax.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "master_seq")
     @Column(name = "ID")
     private long id;
