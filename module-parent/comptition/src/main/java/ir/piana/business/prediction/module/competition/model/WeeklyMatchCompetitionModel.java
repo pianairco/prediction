@@ -15,7 +15,9 @@ public class WeeklyMatchCompetitionModel {
     private long hostTeamId;
     private String hostTeamName;
     private String hostTeamLogo;
+    private long hostGoals;
     private long guestTeamId;
     private String guestTeamName;
     private String guestTeamLogo;
+    private long guestGoals;
 }

@@ -13,10 +13,10 @@ public interface WeeklyMatchesCompetitionPredictionRepository
         extends JpaRepository<WeeklyMatchesCompetitionPredictionEntity, Long> {
 
     @Query(value = "SELECT * FROM weekly_matches_competition_prediction cp, weekly_matches_competition c WHERE " +
-            "cp.user_id = :userId and c.id in (:weeklyMatchCompetitionId) and " +
+            "cp.user_id = :userId and c.id in (:weeklyMatchId) and " +
             "cp.weekly_matches_competition_id = c.id", nativeQuery = true)
     List<WeeklyMatchesCompetitionPredictionEntity> findRegisteredByUserAndCompetition(
             @Param("userId") long userId,
-            @Param("weeklyMatchId") List<Long> weeklyMatchCompetitionId);
+            @Param("weeklyMatchId") List<Long> weeklyMatchId);
     List<WeeklyMatchesCompetitionPredictionEntity> findAllByCompetitionEntity(WeeklyMatchesCompetitionEntity competitionEntity);
 }

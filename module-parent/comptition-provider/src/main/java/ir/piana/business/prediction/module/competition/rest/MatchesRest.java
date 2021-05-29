@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -70,21 +71,51 @@ public class MatchesRest {
             @RequestParam("weeklyMatchesId") long weeklyMatchId) {
         List<WeeklyMatchesCompetitionEntity> weeklyMatchesCompetitions = weeklyMatchesCompetitionRepository.
                 findAllByWeeklyMatchesId(weeklyMatchId);
+
         List<WeeklyMatchCompetitionModel> competitionModels = new ArrayList<>();
         if(weeklyMatchesCompetitions != null && !weeklyMatchesCompetitions.isEmpty()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UserEntity userEntity = null;
+            if(authentication.getPrincipal() instanceof UserModel) {
+                userEntity = ((UserModel) authentication.getPrincipal()).getUserEntity();
+            }
+            List<WeeklyMatchesCompetitionPredictionEntity> registered = competitionPredictionRepository.
+                    findRegisteredByUserAndCompetition(
+                            userEntity.getId(),
+                            Arrays.asList(weeklyMatchId));
+
             for(WeeklyMatchesCompetitionEntity competitionEntity : weeklyMatchesCompetitions) {
+                Optional<WeeklyMatchesCompetitionPredictionEntity> any = registered.stream()
+                        .filter(p -> p.getCompetitionEntity().getId() == competitionEntity.getId())
+                        .findAny();
                 Optional<TeamEntity> hostTeamEntity = teamRepository
                         .findById(competitionEntity.getHostTeamId());
                 Optional<TeamEntity> guestTeamEntity = teamRepository
                         .findById(competitionEntity.getGuestTeamId());
-                competitionModels.add(WeeklyMatchCompetitionModel.builder()
-                        .hostTeamId(hostTeamEntity.get().getId())
-                        .hostTeamLogo(hostTeamEntity.get().getLogo())
-                        .hostTeamName(hostTeamEntity.get().getName())
-                        .guestTeamId(guestTeamEntity.get().getId())
-                        .guestTeamName(guestTeamEntity.get().getName())
-                        .guestTeamLogo(guestTeamEntity.get().getLogo())
-                        .build());
+                if(!any.isPresent()) {
+                    competitionModels.add(WeeklyMatchCompetitionModel.builder()
+                            .competitionId(competitionEntity.getId())
+                            .hostTeamId(hostTeamEntity.get().getId())
+                            .hostTeamLogo(hostTeamEntity.get().getLogo())
+                            .hostTeamName(hostTeamEntity.get().getName())
+                            .guestTeamId(guestTeamEntity.get().getId())
+                            .guestTeamName(guestTeamEntity.get().getName())
+                            .guestTeamLogo(guestTeamEntity.get().getLogo())
+                            .build());
+                } else {
+                    competitionModels.add(WeeklyMatchCompetitionModel.builder()
+                            .competitionId(competitionEntity.getId())
+                            .predictionId(any.isPresent() ? any.get().getId() : null)
+                            .hostGoals(any.isPresent() ? any.get().getHostGoals() : null)
+                            .guestGoals(any.isPresent() ? any.get().getGuestGoals() : null)
+                            .hostTeamId(hostTeamEntity.get().getId())
+                            .hostTeamLogo(hostTeamEntity.get().getLogo())
+                            .hostTeamName(hostTeamEntity.get().getName())
+                            .guestTeamId(guestTeamEntity.get().getId())
+                            .guestTeamName(guestTeamEntity.get().getName())
+                            .guestTeamLogo(guestTeamEntity.get().getLogo())
+                            .build());
+                }
             }
         }
         return ResponseEntity.ok(competitionModels);
