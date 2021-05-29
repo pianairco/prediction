@@ -1,0 +1,18 @@
+<div class="container-fluid">
+  <div class="row row-cols-sm-6 justify-content-center" *ngFor="let w of (weeklyMatchesCompetitionService.weeklyMatchCompetitionModelsSubject | async)">
+    <div class="col-lg-3 col-md-4 col-6 mb-2">
+      <p class="text-end">
+        <span>{{w.hostTeamName}}</span>
+        <img [src]="'assets/images/team/iran/' + w.hostTeamLogo" class="card-img-top img-thumbnail"
+             style="max-width: 32px; max-height: 32px;">
+      </p>
+    </div>
+    <div class="col-lg-3 col-md-4 col-6 mb-2 has-text-left">
+      <p class="text-start">
+        <img [src]="'assets/images/team/iran/' + w.guestTeamLogo" class="card-img-top img-thumbnail"
+             style="max-width: 32px; max-height: 32px;">
+        <span>{{w.guestTeamName}}</span>
+      </p>
+    </div>
+  </div>
+</div>
