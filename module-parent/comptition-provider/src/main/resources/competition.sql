@@ -109,18 +109,33 @@ INSERT INTO team_season (id, team_id, season_id) select * from (
     select 16, 16, 1
 ) where not exists(select * from team_season);
 
+CREATE TABLE IF NOT EXISTS weekly_match_status (
+    id bigint primary key,
+    title varchar(64),
+    title_en varchar(64)
+);
+
+INSERT INTO weekly_match_status (id, title, title_en) select * from (
+    select 1 id, 'پیش از بازی ها' title, 'before_matches' title_en union
+    select 2 id, 'شروع بازی ها' title, 'start_matches' title_en union
+    select 3 id, 'امتیاز دهی' title, 'scoring' title_en union
+    select 4 id, 'پایان' title, 'end' title_en
+) where not exists(select * from weekly_match_status);
+
 CREATE TABLE IF NOT EXISTS weekly_matches (
     id bigint primary key,
+    weekly_match_status_id bigint,
     season_id bigint,
     week_number bigint,
     start_date char(10),
     end_date char(10),
     is_active bigint default 1,
+    constraint fk_weekly_matches_2_weekly_match_status_by_weekly_match_status_id FOREIGN KEY (weekly_match_status_id) REFERENCES weekly_match_status(id),
     constraint fk_weekly_matches_2_season_by_season_id FOREIGN KEY (season_id) REFERENCES season(id)
 );
 
-INSERT INTO weekly_matches (id, season_id, week_number, start_date, end_date, is_active) select * from (
-    select 1 id, 1 season_id, 24 week_number, '1400/03/20' start_date, '1400/03/22' end_date, 1 is_active
+INSERT INTO weekly_matches (id, weekly_match_status_id, season_id, week_number, start_date, end_date, is_active) select * from (
+    select 1 id, 1 weekly_match_status_id, 1 season_id, 24 week_number, '1400/03/20' start_date, '1400/03/22' end_date, 1 is_active
 ) where not exists(select * from weekly_matches);
 
 CREATE TABLE IF NOT EXISTS weekly_matches_competition (
@@ -146,13 +161,14 @@ INSERT INTO weekly_matches_competition (id, weekly_matches_id, host_team_id, gue
 
 CREATE TABLE IF NOT EXISTS prediction_result (
     id bigint primary key,
-    title char(5)
+    title varchar(32),
+    title_en char(5)
 );
 
-INSERT INTO prediction_result (id, title) select * from (
-    select 1 id, 'win' title union
-    select 2, 'equal' union
-    select 3, 'loss'
+INSERT INTO prediction_result (id, title, title_en) select * from (
+    select 1 id, 'برد' title, 'win' title_en union
+    select 2, 'تساوی', 'equal' union
+    select 3, 'باخت', 'loss'
 ) where not exists(select * from prediction_result);
 
 CREATE TABLE IF NOT EXISTS weekly_matches_competition_result (

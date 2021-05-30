@@ -2,6 +2,7 @@ import {Injectable, Injector} from '@angular/core';
 import {ConstantService} from "./constant.service";
 import {AjaxCallService} from "./ajax-call.service";
 import {log} from "util";
+import {PredictingMatchesModel} from "./weekly-mathes-competition.service";
 
 @Injectable({
   providedIn: 'root'
@@ -36,5 +37,10 @@ export class RestClientService {
 
   getWeeklyMatchesCompetitions(weeklyMatchesId: number) {
     return this.ajaxCallService.read(this.ajaxUrlMap.weeklyMatches + '/competitions?weeklyMatchesId=' + weeklyMatchesId);
+  }
+
+  registerWeeklyMatchesPredictions(predictingMatchesModels: PredictingMatchesModel[]) {
+    return this.ajaxCallService.save(
+      this.ajaxUrlMap.weeklyMatches + '/predicting-matches', predictingMatchesModels);
   }
 }

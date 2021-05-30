@@ -19,6 +19,8 @@ public class WeeklyMatchesEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "master_seq")
     @Column(name = "ID")
     private long id;
+    @Column(name = "weekly_match_status_id")
+    private long statusId;
     @ManyToOne
     @JoinColumn(name="season_id")
     SeasonEntity seasonEntity;

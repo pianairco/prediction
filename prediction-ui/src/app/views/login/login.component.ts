@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     this.subDomain = this.route.snapshot.queryParams['sub-domain'];
     //   console.log("--------- param -----------")
-    console.log(this.subDomain, this.returnUrl)
+    // console.log(this.subDomain, this.returnUrl)
     this.loginInfo = {
       username: '',
       password: '',

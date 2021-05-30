@@ -1,7 +1,8 @@
 <div class="container-fluid">
   <div class="row justify-content-center py-2 match-selector"
        [ngStyle]="{'font-size': (this.resizeService.onResize$ | async) < 3 ? '10px' : '20px'}"
-       *ngFor="let w of (weeklyMatchesCompetitionService.weeklyMatchCompetitionModelsSubject | async)">
+       *ngFor="let w of weeklyMatchCompetitions">
+<!--       *ngFor="let w of (weeklyMatchesCompetitionService.weeklyMatchCompetitionModelsSubject | async)">-->
     <div class="col-6 mb-2">
       <p [class.text-end]="(this.resizeService.onResize$ | async) >= 1"
          [class.text-center]="(this.resizeService.onResize$ | async) < 1">
@@ -13,7 +14,8 @@
             {{w.hostTeamName}}</span>
         <input class="form-control form-control-sm" type="number" min="0" max="99"
                *ngIf="(this.resizeService.onResize$ | async) >= 1"
-               style="display: inline; width: 80px;">
+               [(ngModel)]="w.hostGoals"
+               style="display: inline; width: 80px; direction: ltr;">
       </p>
     </div>
     <div class="col-6 mb-2 has-text-left">
@@ -22,7 +24,8 @@
          [class.text-center]="(this.resizeService.onResize$ | async) < 1">
         <input class="form-control form-control-sm" type="number" min="0" max="99"
                *ngIf="(this.resizeService.onResize$ | async) >= 1"
-               style="display: inline; width: 80px;">
+               [(ngModel)]="w.guestGoals"
+               style="display: inline; width: 80px; direction: rtl;">
         <img [src]="'assets/images/team/iran/' + w.guestTeamLogo" class="card-img-top img-thumbnail m-2"
              style="max-width: 32px; max-height: 32px;">
         <span [ngStyle]="{'display': (this.resizeService.onResize$ | async) <= 1 ? 'block' : 'inline'}">{{w.guestTeamName}}</span>
@@ -38,8 +41,9 @@
 
   <div class="row justify-content-center py-4">
     <div class="columns col-12 col-md-6 text-center">
-      <button class="btn btn-success mx-1">ثبت</button>
-      <button class="btn btn-danger mx-1">پاک کردن</button>
+      <button class="btn btn-success mx-1" (click)="register()">ثبت</button>
+      <button class="btn btn-danger mx-1" (click)="reset()">لغو تغییرات</button>
+      <button class="btn btn-warning mx-1" (click)="return()">بازگشت</button>
     </div>
   </div>
 </div>

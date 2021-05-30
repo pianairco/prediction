@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface WeeklyMatchesRepository extends JpaRepository<WeeklyMatchesEntity, Long> {
-    @Query(value = "SELECT * FROM weekly_matches wm WHERE wm.start_date between :first and :second", nativeQuery = true)
+    @Query(value = "SELECT * FROM weekly_matches wm WHERE wm.start_date between :first and :second and wm.weekly_match_status_id in (1, 2, 3)", nativeQuery = true)
     List<WeeklyMatchesEntity> findFutureWeeklyMatches(@Param("first") String first, @Param("second") String second);
 }

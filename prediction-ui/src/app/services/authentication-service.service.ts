@@ -36,12 +36,14 @@ export class AuthenticationService {
   async getAppInfo() {
     let res = await axios.post('api/app-info', {}, {headers: {}});
     if (res.status === 200) {
+      console.log(res['data'])
       this.appInfo = res['data'];
       // console.log(appInfo);
       // console.log(JSON.stringify(appInfo));
       // console.log(localStorage.getItem('appInfo'));
 
       this.pianaStorageService.putObject('appInfo', this.appInfo);
+      console.log(this.pianaStorageService.getObject('appInfo'));
       // localStorage.setItem('currentUser', JSON.stringify(appInfo))
       // console.log(this.pianaStorageService.getObject('appInfo')['username'])
       // console.log(this.pianaStorageService.getFieldValue('appInfo', 'username'))
@@ -100,13 +102,13 @@ export class AuthenticationService {
     try {
       let res = await axios.post('api/sign-in', loginInfo, {headers: {'auth-type': 'form'}});
       console.log(res);
-      let appInfo = res['data'];
+      this.appInfo = res['data'];
       // console.log(appInfo);
       // console.log(JSON.stringify(appInfo));
       // localStorage.setItem('currentUser', JSON.stringify(appInfo));
-      this.pianaStorageService.putObject('appInfo', appInfo);
+      this.pianaStorageService.putObject('appInfo', this.appInfo);
       // console.log(localStorage.getItem('currentUser'));
-      return appInfo;
+      return this.appInfo;
     } catch (err) {
       // this.timeStamp = this.timeStamp + 1;
       throw err;

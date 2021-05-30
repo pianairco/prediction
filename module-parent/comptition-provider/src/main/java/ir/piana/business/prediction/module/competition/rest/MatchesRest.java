@@ -124,7 +124,7 @@ public class MatchesRest {
     @PostMapping(path = "predicting-matches",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseModel> predictingMatches(
+    public ResponseEntity<List<WeeklyMatchCompetitionModel>> predictingMatches(
             @RequestBody List<PredictingMatchesModel> predictingMatchesModels) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity userEntity = null;
@@ -132,9 +132,11 @@ public class MatchesRest {
             userEntity = ((UserModel) authentication.getPrincipal()).getUserEntity();
         }
         List<WeeklyMatchesCompetitionPredictionEntity> result = new ArrayList<>();
+        long weeklyMatchId = 0;
         if(userEntity != null) {
             List<Long> collect = predictingMatchesModels.stream()
                     .map(p -> p.getWeeklyMatchId()).collect(Collectors.toList());
+            weeklyMatchId = collect.get(0);
             List<WeeklyMatchesCompetitionPredictionEntity> registeredPredictions = competitionPredictionRepository
                     .findRegisteredByUserAndCompetition(userEntity.getId(), collect);
             if(registeredPredictions != null) {
@@ -165,6 +167,6 @@ public class MatchesRest {
         }
 
         competitionPredictionRepository.saveAll(result);
-        return ResponseEntity.ok(ResponseModel.builder().code(0).build());
+        return this.getWeeklyMatchesCompetitions(weeklyMatchId);
     }
 }
