@@ -9,16 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WeeklyMatchCompetitionModel {
+public class CompetitionResultModel {
+    private long weeklyMatchId;
     private long competitionId;
-    private long predictionId;
-    private long hostTeamId;
-    private String hostTeamName;
-    private String hostTeamLogo;
     private long hostGoals;
-    private long guestTeamId;
-    private String guestTeamName;
-    private String guestTeamLogo;
     private long guestGoals;
     private long registeringTime;
 }

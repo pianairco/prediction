@@ -15,11 +15,11 @@ import {
 } from "../../services/weekly-mathes-competition-result.service";
 
 @Component({
-  selector: 'app-weekly-matches-view',
-  templateUrl: './weekly-matches-view.component.html',
-  styleUrls: ['./weekly-matches-view.component.css']
+  selector: 'app-matches-ranking-view',
+  templateUrl: './matches-ranking-view.component.html',
+  styleUrls: ['./matches-ranking-view.component.css']
 })
-export class WeeklyMatchesComponent implements OnInit {
+export class MatchesRankingComponent implements OnInit {
   @Input() weeklyMatchesId: number;
   private subWeeklyMatchesId: any;
   public weeklyMatchCompetitions: WeeklyMatchCompetitionModel[] = [];

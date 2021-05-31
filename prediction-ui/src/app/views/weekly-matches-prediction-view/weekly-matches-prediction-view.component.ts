@@ -9,24 +9,16 @@ import {
 } from "../../services/weekly-mathes-competition.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ScreenSizeService} from "../../services/screen-size.service";
-import {
-  CompetitionResultModel,
-  WeeklyMatchesCompetitionResultService
-} from "../../services/weekly-mathes-competition-result.service";
 
 @Component({
-  selector: 'app-weekly-matches-view',
-  templateUrl: './weekly-matches-view.component.html',
-  styleUrls: ['./weekly-matches-view.component.css']
+  selector: 'app-weekly-matches-prediction-view',
+  templateUrl: './weekly-matches-prediction-view.component.html',
+  styleUrls: ['./weekly-matches-prediction-view.component.css']
 })
-export class WeeklyMatchesComponent implements OnInit {
+export class WeeklyMatchesPredictionComponent implements OnInit {
   @Input() weeklyMatchesId: number;
   private subWeeklyMatchesId: any;
   public weeklyMatchCompetitions: WeeklyMatchCompetitionModel[] = [];
-  public competitionResults: CompetitionResultModel[] = [];
-  public resMap: {} = {};
-
-  disabled = true;
 
   constructor(
     private router: Router,
@@ -34,16 +26,8 @@ export class WeeklyMatchesComponent implements OnInit {
     private route: ActivatedRoute,
     private pianaStorageService: PianaStorageService,
     private restClientService: RestClientService,
-    public competitionResultService: WeeklyMatchesCompetitionResultService,
     public weeklyMatchesCompetitionService: WeeklyMatchesCompetitionService,
     private siteCategoryService: SiteCategoryService) {
-    competitionResultService.competitionResultModelsSubject.subscribe(res => {
-      this.competitionResults = JSON.parse(JSON.stringify(res));
-      this.competitionResults.forEach(cr => {
-        this.resMap[cr.competitionId] = cr;
-      })
-    });
-
     weeklyMatchesCompetitionService.weeklyMatchCompetitionModelsSubject.subscribe(
       res => {
         this.weeklyMatchCompetitions = JSON.parse(JSON.stringify(res));
@@ -62,16 +46,7 @@ export class WeeklyMatchesComponent implements OnInit {
       // In a real app: dispatch action to load the details here.
       console.log(this.weeklyMatchesId)
       this.weeklyMatchesCompetitionService.fetch(this.weeklyMatchesId);
-      this.competitionResultService.fetch(this.weeklyMatchesId);
     });
-  }
-
-  getResult(competitionModel: WeeklyMatchCompetitionModel): CompetitionResultModel {
-    for(let competitionResult of this.competitionResults) {
-      if(competitionResult.competitionId == competitionModel.competitionId)
-        return competitionResult;
-    }
-    return null;
   }
 
   register() {

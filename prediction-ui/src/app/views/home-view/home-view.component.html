@@ -8,9 +8,22 @@
           <p class="card-text"><span dir="rtl" style="direction: rtl">{{w.seasonTag}}</span></p>
           <p class="card-text">هفته {{w.weekNumber}}</p>
           <p class="card-text">{{w.startDate}}-{{w.endDate}}</p>
-          <a class="btn btn-success"
-             [routerLink]="['/tile/weekly-matches', w.id]"
+          <a class="btn btn-success mx-1" *ngIf="w.isActive"
+             [routerLink]="['/tile/weekly-matches-prediction', w.id]"
              routerLinkActive="menu-active-link">شروع</a>
+          <a class="btn btn-success mx-1" *ngIf="!w.isActive"
+             [routerLink]="['/tile/weekly-matches-view', w.id]"
+             routerLinkActive="menu-active-link">مشاهده</a>
+          <a class="btn btn-primary mx-1"
+             [routerLink]="['/tile/weekly-matches-score', w.id]"
+             routerLinkActive="menu-active-link">رنکینگ</a>
+          <a class="btn btn-warning mx-1" *ngIf="authService.isAdmin() && w.statusId == 2"
+             [routerLink]="['/tile/weekly-matches-result', w.id]"
+             routerLinkActive="menu-active-link">ثبت نتیجه</a>
+          <biutton class="btn btn-danger mx-1"
+                   *ngIf="authService.isAdmin() && w.statusId == 1"
+             (click)="close(w.id)"
+             routerLinkActive="menu-active-link">بستن</biutton>
         </div>
       </div>
     </div>

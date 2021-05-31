@@ -51,6 +51,10 @@ export class AuthenticationService {
     }
   }
 
+  isAdmin(): boolean {
+    return this.appInfo != null && this.appInfo['isAdmin'];
+  }
+
   /*async googleSignIn (subDomain) {
     try {
       console.log("service googleSignIn")

@@ -1,13 +1,10 @@
 <div class="container-fluid">
-  <div class="row justify-content-center py-2" style="border-bottom: 1px solid #e7c11c;">
-    &nbsp;
-  </div>
   <div class="row justify-content-center py-2 match-selector"
        [ngStyle]="{'border-bottom-left-radius': (this.resizeService.onResize$ | async) < 3 ? '0px' : '80px'}"
        [ngStyle]="{'font-size': (this.resizeService.onResize$ | async) < 3 ? '10px' : '20px'}"
        *ngFor="let w of weeklyMatchCompetitions">
 <!--       *ngFor="let w of (weeklyMatchesCompetitionService.weeklyMatchCompetitionModelsSubject | async)">-->
-    <div class="col-6 ">
+    <div class="col-6 mb-2">
       <p [class.text-end]="(this.resizeService.onResize$ | async) >= 1"
          [class.text-center]="(this.resizeService.onResize$ | async) < 1">
           <span [ngStyle]="{'display': (this.resizeService.onResize$ | async) < 1 ? 'none' : 'inline'}">
@@ -15,24 +12,18 @@
         <img [src]="'assets/images/team/iran/' + w.hostTeamLogo" class="card-img-top img-thumbnail m-2"
              style="max-width: 32px; max-height: 32px;">
         <span [ngStyle]="{'display': (this.resizeService.onResize$ | async) < 1 ? 'block' : 'none'}">
-            {{w.hostTeamName}}
-        </span>
-
+            {{w.hostTeamName}}</span>
         <input class="form-control form-control-sm" type="number" min="0" max="99"
-               [disabled]="disabled"
-               [ngStyle]="{'background-color': resMap[w.competitionId] && resMap[w.competitionId]['hostGoals'] == w.hostGoals ? '#c6e2c6' : '#ecbcbc'}"
                *ngIf="(this.resizeService.onResize$ | async) >= 1"
                [(ngModel)]="w.hostGoals"
                style="display: inline; width: 80px; direction: ltr;">
       </p>
     </div>
-    <div class="col-6 has-text-left">
+    <div class="col-6 mb-2 has-text-left">
       <p class="text-start"
          [class.text-start]="(this.resizeService.onResize$ | async) >= 1"
          [class.text-center]="(this.resizeService.onResize$ | async) < 1">
         <input class="form-control form-control-sm" type="number" min="0" max="99"
-               [disabled]="disabled"
-               [ngStyle]="{'background-color': resMap[w.competitionId] && resMap[w.competitionId]['guestGoals'] == w.guestGoals ? '#c6e2c6' : '#ecbcbc'}"
                *ngIf="(this.resizeService.onResize$ | async) >= 1"
                [(ngModel)]="w.guestGoals"
                style="display: inline; width: 80px; direction: rtl;">
@@ -42,36 +33,17 @@
       </p>
     </div>
     <div class="col-6 px-2" *ngIf="(this.resizeService.onResize$ | async) < 1">
-      <input class="form-control form-control-sm" type="number" min="0" max="99"
-             style="text-align: center"
-             [disabled]="disabled"
-             [ngStyle]="{'background-color': resMap[w.competitionId] && resMap[w.competitionId]['hostGoals'] == w.hostGoals ? '#c6e2c6' : '#ecbcbc'}"
-             [(ngModel)]="w.hostGoals">
+      <input class="form-control form-control-sm" type="number" min="0" max="99" >
     </div>
     <div class="col-6 px-2" *ngIf="(this.resizeService.onResize$ | async) < 1">
-      <input class="form-control form-control-sm" type="number" min="0" max="99"
-             style="text-align: center"
-             [disabled]="disabled"
-             [ngStyle]="{'background-color': resMap[w.competitionId] && resMap[w.competitionId]['guestGoals'] == w.guestGoals ? '#c6e2c6' : '#ecbcbc'}"
-             [(ngModel)]="w.guestGoals">
-    </div>
-    <div class="col-6 px-2" style="height: 16px">
-      <p style="font-size: 12px; color: red;" [class.text-end]="(this.resizeService.onResize$ | async) >= 1"
-         [class.text-center]="(this.resizeService.onResize$ | async) < 1">
-        <span class="badge bg-primary" dir="ltr">{{getResult(w).registeringTime}}":00'</span>
-        <span class="mx-2 host-goals">{{getResult(w).hostGoals}}</span>
-      </p>
-    </div>
-    <div class="col-6 px-2" style="border-right: 1px dotted gray; height: 16px">
-      <p style="font-size: 12px; color: red;" [class.text-start]="(this.resizeService.onResize$ | async) >= 1"
-         [class.text-center]="(this.resizeService.onResize$ | async) < 1">
-        <span class="mx-2 host-goals">{{getResult(w).guestGoals}}</span>
-      </p>
+      <input class="form-control form-control-sm" type="number" min="0" max="99">
     </div>
   </div>
 
   <div class="row justify-content-center py-4">
     <div class="columns col-12 col-md-6 text-center">
+      <button class="btn btn-success mx-1" (click)="register()">ثبت</button>
+      <button class="btn btn-danger mx-1" (click)="reset()">لغو تغییرات</button>
       <button class="btn btn-warning mx-1" (click)="return()">بازگشت</button>
     </div>
   </div>

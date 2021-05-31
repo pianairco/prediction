@@ -1,14 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {RestClientService} from "../../services/rest-client.service";
-import {SiteInfo} from "../new-site/new-site.component";
 import {PianaStorageService} from "../../services/piana-storage.service";
 import {SiteCategoryService} from "../../services/site-category.service";
 import {WeeklyMatchesService} from "../../services/weekly-mathes.service";
+import {AuthenticationService} from "../../services/authentication-service.service";
 
-interface Food {
-  value: string;
-  viewValue: string;
-}
 
 @Component({
   selector: 'app-home-view',
@@ -18,6 +14,7 @@ interface Food {
 export class HomeViewComponent implements OnInit {
 
   constructor(
+    public authService: AuthenticationService,
     private pianaStorageService: PianaStorageService,
     private restClientService: RestClientService,
     public weeklyMatchesService: WeeklyMatchesService,
@@ -26,5 +23,9 @@ export class HomeViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.weeklyMatchesService.fetch();
+  }
+
+  close(weeklyMatchesId) {
+    this.weeklyMatchesService.close(weeklyMatchesId);
   }
 }

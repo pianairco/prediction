@@ -1,13 +1,24 @@
 <div class="container-fluid">
-  <div class="row justify-content-center py-2" style="border-bottom: 1px solid #e7c11c;">
-    &nbsp;
-  </div>
+  <div class="row justify-content-center py-2" style="border-bottom: 1px solid #e7c11c;">&nbsp;</div>
+  <!--<div class="row justify-content-center py-2" style="border-bottom: 1px solid #e7c11c;">
+    <div class="col-6 mb-2">
+      <p [class.text-end]="(this.resizeService.onResize$ | async) >= 1"
+         [class.text-center]="(this.resizeService.onResize$ | async) < 1">
+        <span class="mx-2">
+            تا دقیقه</span>
+        <input type="number" class="form-control form-control-sm" id="inputTime"
+               min="0" max="120"
+               [(ngModel)]="registeringTime"
+               style="display: inline; width: 80px; direction: ltr;">
+      </p>
+    </div>
+    <div class="col-6 mb-2">&nbsp;</div>
+  </div>-->
   <div class="row justify-content-center py-2 match-selector"
-       [ngStyle]="{'border-bottom-left-radius': (this.resizeService.onResize$ | async) < 3 ? '0px' : '80px'}"
        [ngStyle]="{'font-size': (this.resizeService.onResize$ | async) < 3 ? '10px' : '20px'}"
        *ngFor="let w of weeklyMatchCompetitions">
 <!--       *ngFor="let w of (weeklyMatchesCompetitionService.weeklyMatchCompetitionModelsSubject | async)">-->
-    <div class="col-6 ">
+    <div class="col-6 mb-2">
       <p [class.text-end]="(this.resizeService.onResize$ | async) >= 1"
          [class.text-center]="(this.resizeService.onResize$ | async) < 1">
           <span [ngStyle]="{'display': (this.resizeService.onResize$ | async) < 1 ? 'none' : 'inline'}">
@@ -15,26 +26,22 @@
         <img [src]="'assets/images/team/iran/' + w.hostTeamLogo" class="card-img-top img-thumbnail m-2"
              style="max-width: 32px; max-height: 32px;">
         <span [ngStyle]="{'display': (this.resizeService.onResize$ | async) < 1 ? 'block' : 'none'}">
-            {{w.hostTeamName}}
-        </span>
-
+            {{w.hostTeamName}}</span>
         <input class="form-control form-control-sm" type="number" min="0" max="99"
-               [disabled]="disabled"
-               [ngStyle]="{'background-color': resMap[w.competitionId] && resMap[w.competitionId]['hostGoals'] == w.hostGoals ? '#c6e2c6' : '#ecbcbc'}"
                *ngIf="(this.resizeService.onResize$ | async) >= 1"
+               (change)="checkHostGoals(w)"
                [(ngModel)]="w.hostGoals"
                style="display: inline; width: 80px; direction: ltr;">
       </p>
     </div>
-    <div class="col-6 has-text-left">
+    <div class="col-6 mb-2 has-text-left">
       <p class="text-start"
          [class.text-start]="(this.resizeService.onResize$ | async) >= 1"
          [class.text-center]="(this.resizeService.onResize$ | async) < 1">
         <input class="form-control form-control-sm" type="number" min="0" max="99"
-               [disabled]="disabled"
-               [ngStyle]="{'background-color': resMap[w.competitionId] && resMap[w.competitionId]['guestGoals'] == w.guestGoals ? '#c6e2c6' : '#ecbcbc'}"
                *ngIf="(this.resizeService.onResize$ | async) >= 1"
                [(ngModel)]="w.guestGoals"
+               (change)="checkGuestGoals(w)"
                style="display: inline; width: 80px; direction: rtl;">
         <img [src]="'assets/images/team/iran/' + w.guestTeamLogo" class="card-img-top img-thumbnail m-2"
              style="max-width: 32px; max-height: 32px;">
@@ -44,34 +51,40 @@
     <div class="col-6 px-2" *ngIf="(this.resizeService.onResize$ | async) < 1">
       <input class="form-control form-control-sm" type="number" min="0" max="99"
              style="text-align: center"
-             [disabled]="disabled"
-             [ngStyle]="{'background-color': resMap[w.competitionId] && resMap[w.competitionId]['hostGoals'] == w.hostGoals ? '#c6e2c6' : '#ecbcbc'}"
+             (change)="checkHostGoals(w)"
              [(ngModel)]="w.hostGoals">
     </div>
     <div class="col-6 px-2" *ngIf="(this.resizeService.onResize$ | async) < 1">
       <input class="form-control form-control-sm" type="number" min="0" max="99"
              style="text-align: center"
-             [disabled]="disabled"
-             [ngStyle]="{'background-color': resMap[w.competitionId] && resMap[w.competitionId]['guestGoals'] == w.guestGoals ? '#c6e2c6' : '#ecbcbc'}"
+             (change)="checkGuestGoals(w)"
              [(ngModel)]="w.guestGoals">
     </div>
-    <div class="col-6 px-2" style="height: 16px">
-      <p style="font-size: 12px; color: red;" [class.text-end]="(this.resizeService.onResize$ | async) >= 1"
-         [class.text-center]="(this.resizeService.onResize$ | async) < 1">
-        <span class="badge bg-primary" dir="ltr">{{getResult(w).registeringTime}}":00'</span>
-        <span class="mx-2 host-goals">{{getResult(w).hostGoals}}</span>
+
+    <div class="col-12 px-2 mt-2">
+      <p style="text-align: center">
+        <button class="btn btn-sm btn-danger py-0 px-1 mx-2" (click)="changeRegisteringTime(w, -1)">
+          <i class="fa fa-sm fa-minus"></i>
+        </button>
+        تا دقیقه<span class="mx-2">{{w.registeringTime}}</span>
+        <button class="btn btn-sm btn-success py-0 px-1 mx-2" (click)="changeRegisteringTime(w, 1)">
+          <i class="fa fa-sm fa-plus"></i>
+        </button>
       </p>
+      <input type="range" class="form-range" id="customRange1" min="0" max="120"
+             (change)="checkRegisteringTime(w)"
+             [(ngModel)]="w.registeringTime">
     </div>
-    <div class="col-6 px-2" style="border-right: 1px dotted gray; height: 16px">
-      <p style="font-size: 12px; color: red;" [class.text-start]="(this.resizeService.onResize$ | async) >= 1"
-         [class.text-center]="(this.resizeService.onResize$ | async) < 1">
-        <span class="mx-2 host-goals">{{getResult(w).guestGoals}}</span>
-      </p>
+
+    <div class="col-12 px-2 mt-2" *ngIf="checkForChange(w)" style="text-align: center">
+      <button class="btn btn-sm btn-success"
+              (click)="register(w)">ثبت</button>
     </div>
   </div>
 
   <div class="row justify-content-center py-4">
     <div class="columns col-12 col-md-6 text-center">
+      <!--<button class="btn btn-success mx-1" (click)="register()">ثبت</button>-->
       <button class="btn btn-warning mx-1" (click)="return()">بازگشت</button>
     </div>
   </div>

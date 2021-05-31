@@ -26,6 +26,9 @@ import { SiteCategoryComponent } from './components/site-category/site-category.
 import {ServiceWorkerModule} from "@angular/service-worker";
 import {environment} from "../environments/environment";
 import {WeeklyMatchesComponent} from "./views/weekly-matches-view/weekly-matches-view.component";
+import {WeeklyMatchesResultComponent} from "./views/weekly-matches-result-view/weekly-matches-result-view.component";
+import {WeeklyMatchesPredictionComponent} from "./views/weekly-matches-prediction-view/weekly-matches-prediction-view.component";
+import {MatchesRankingComponent} from "./views/matches-ranking-view/matches-ranking-view.component";
 
 @NgModule({
   declarations: [
@@ -37,6 +40,9 @@ import {WeeklyMatchesComponent} from "./views/weekly-matches-view/weekly-matches
     TileComponent,
     HomeViewComponent,
     WeeklyMatchesComponent,
+    WeeklyMatchesResultComponent,
+    WeeklyMatchesPredictionComponent,
+    MatchesRankingComponent,
     FormMakerComponent,
     NotificationComponent,
     LoadingComponent,

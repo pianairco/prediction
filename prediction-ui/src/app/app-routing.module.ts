@@ -3,14 +3,14 @@ import {RouterModule, Routes} from '@angular/router';
 import {AuthGuard} from "./guards/auth.guard";
 import {TileComponent} from "./views/tile/tile.component";
 import {HomeViewComponent} from "./views/home-view/home-view.component";
-import {FormMakerComponent} from "./components/form-maker/form-maker.component";
 import {LoginComponent} from "./views/login/login.component";
 import {PageNotFoundComponent} from "./views/page-not-found/page-not-found.component";
 import {PasswordSettingComponent} from "./views/password-setting/password-setting.component";
-import {SiteSettingComponent} from "./views/site-setting/site-setting.component";
-import {MySitesComponent} from "./views/my-sites/my-sites.component";
-import {NewSiteComponent} from "./views/new-site/new-site.component";
 import {WeeklyMatchesComponent} from "./views/weekly-matches-view/weekly-matches-view.component";
+import {WeeklyMatchesResultComponent} from "./views/weekly-matches-result-view/weekly-matches-result-view.component";
+import {AdminGuard} from "./guards/admin.guard";
+import {WeeklyMatchesPredictionComponent} from "./views/weekly-matches-prediction-view/weekly-matches-prediction-view.component";
+import {MatchesRankingComponent} from "./views/matches-ranking-view/matches-ranking-view.component";
 
 const routes: Routes = [
   {
@@ -20,15 +20,12 @@ const routes: Routes = [
           { path: 'tile', component: TileComponent, children:[
               { path: '', redirectTo: '/home', pathMatch: 'full' },
               { path: 'home', component: HomeViewComponent },
-              { path: 'weekly-matches/:weeklyMatchesId', component: WeeklyMatchesComponent },
-              { path: 'add-user/:groupName/:formName', component: FormMakerComponent },
-              { path: 'password-setting', component: PasswordSettingComponent },
-              { path: 'site-setting', component: SiteSettingComponent, children:[
-                  { path: '', redirectTo: 'my-sites', pathMatch: 'full' },
-                  { path: 'my-sites', component: MySitesComponent },
-                  { path: 'new-site', component: NewSiteComponent }
-                ]
-              }
+              { path: 'weekly-matches-result/:weeklyMatchesId', component: WeeklyMatchesResultComponent },
+              { path: 'weekly-matches-prediction/:weeklyMatchesId', component: WeeklyMatchesPredictionComponent },
+              { path: 'weekly-matches-view/:weeklyMatchesId', component: WeeklyMatchesComponent },
+              { path: 'weekly-matches/result/:weeklyMatchesId', component: WeeklyMatchesResultComponent, canActivate:[AdminGuard] },
+              { path: 'matches-ranking/:weeklyMatchesId', component: MatchesRankingComponent },
+              { path: 'password-setting', component: PasswordSettingComponent }
             ] },
         ]
       },

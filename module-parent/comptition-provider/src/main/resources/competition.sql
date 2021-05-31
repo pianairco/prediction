@@ -176,6 +176,7 @@ CREATE TABLE IF NOT EXISTS weekly_matches_competition_result (
     weekly_matches_competition_id bigint,
     host_goals bigint,
     guest_goals bigint,
+    registering_time bigint default 0,
     constraint fk_weekly_matches_competition_result_2_weekly_matches_competition_by_weekly_matches_competition_id FOREIGN KEY (weekly_matches_competition_id) REFERENCES weekly_matches_competition(id)
 );
 

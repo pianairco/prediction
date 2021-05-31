@@ -27,6 +27,24 @@ export class WeeklyMatchesService {
     });
   }
 
+  close(weeklyMatchesId) {
+    this.restClientService.closeWeeklyMatches(weeklyMatchesId).then(res => {
+      console.log(res)
+      console.log(res.data)
+      if(res.data['code'] == 0) {
+        for (let m of this._weeklyMatchModels) {
+          if(m.id == weeklyMatchesId) {
+            m.statusId = 2;
+            m.isActive = false;
+          }
+        }
+        this.weeklyMatchModels = this._weeklyMatchModels;
+      }
+    }, err => {
+      console.log(err);
+    });
+  }
+
   set weeklyMatchModels(_weeklyMatchModels) {
     this._weeklyMatchModels = _weeklyMatchModels;
     console.log(this._weeklyMatchModels)
@@ -40,10 +58,12 @@ export class WeeklyMatchesService {
 
 export class WeeklyMatchModel {
   id: number;
+  statusId: number;
   leagueName: string;
   leagueLogo: string;
   seasonTag: string;
   weekNumber: number;
   startDate: string;
   endDate: string;
+  isActive: boolean;
 };

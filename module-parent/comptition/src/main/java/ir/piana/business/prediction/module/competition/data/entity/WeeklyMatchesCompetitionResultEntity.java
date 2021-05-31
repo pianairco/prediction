@@ -24,4 +24,6 @@ public class WeeklyMatchesCompetitionResultEntity {
     private long hostGoals;
     @Column(name = "guest_goals")
     private long guestGoals;
+    @Column(name = "registering_time")
+    private long registeringTime;
 }
