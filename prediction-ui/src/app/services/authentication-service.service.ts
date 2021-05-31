@@ -130,6 +130,7 @@ export class AuthenticationService {
     // remove user from local storage to log user out
     try {
       let appInfo = this.pianaStorageService.getObject('appInfo');
+      console.log(appInfo)
       if(appInfo == null)
         return;
       let res = await axios.post('api/sign-out', {headers: {}});

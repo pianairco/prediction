@@ -214,7 +214,7 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
         role_owner = auth.getAuthorities().stream()
                 .filter(e -> e.getAuthority().equalsIgnoreCase("ROLE_ADMIN")).findAny();
 
-        AppInfo appInfo = AppInfo.builder()
+        /*AppInfo appInfo = AppInfo.builder()
                 .isLoggedIn(true)
                 .isAdmin(role_owner.isPresent())
 //                .isAdmin(userEntity.getUserRolesEntities().stream()
@@ -224,11 +224,13 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
                 .username(userEntity.getGivenName())
                 .email(userEntity.getEmail())
                 .pictureUrl(userEntity.getPictureUrl())
-                .build();
+                .build();*/
 
-        appInfo = AppInfo.builder()
+        AppInfo appInfo = AppInfo.builder()
                 .isLoggedIn(true)
-                .isAdmin(true)
+                .isAdmin(auth.getAuthorities().stream()
+                        .filter(e -> e.getAuthority().equalsIgnoreCase("ROLE_ADMIN"))
+                        .map(e -> true).findFirst().orElse(false))
                 .isFormPassword(userEntity.getFormPassword() == null ? false : true)
                 .username(userEntity.getGivenName())
                 .email(userEntity.getEmail())

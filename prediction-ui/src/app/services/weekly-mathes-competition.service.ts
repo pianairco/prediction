@@ -72,6 +72,7 @@ export class PredictingMatchesModel {
 }
 
 export class WeeklyMatchCompetitionModel {
+  organizer: number;
   competitionId: number;
   predictionId: number;
   hostTeamId: number;

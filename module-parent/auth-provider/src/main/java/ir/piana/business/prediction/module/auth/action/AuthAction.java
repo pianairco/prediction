@@ -28,7 +28,7 @@ public class AuthAction extends AjaxController.Action {
             appInfo = AppInfo.builder()
                     .isLoggedIn(true)
                     .isAdmin(authentication.getAuthorities().stream()
-                            .filter(e -> e.getAuthority().equalsIgnoreCase("ROLE_SITE_OWNER"))
+                            .filter(e -> e.getAuthority().equalsIgnoreCase("ROLE_ADMIN"))
                             .map(e -> true).findFirst().orElse(false))
 //                    .isAdmin(userEntity.getUserRolesEntities().stream()
 //                            .filter(e -> e.getRoleName().equalsIgnoreCase("ROLE_SITE_OWNER"))

@@ -38,7 +38,9 @@ INSERT INTO league (id, league_organizer_id, name, name_en, is_active) select * 
     select 2, 9, 'لیگ برتر انگلستان', 'premier league', 0 union
     select 3, 10, 'بوندس لیگا آلمان', 'bundes liga', 0 union
     select 4, 11, 'سری آ ایتالیا', 'serie a league', 0 union
-    select 5, 12, 'لالیگا اسپانیا', 'apnia laliga', 0
+    select 5, 12, 'لالیگا اسپانیا', 'apnia laliga', 0 union
+    select 6, 2, 'مقدماتی جام جهانی آسیا', 'Asian World Cup qualifiers', 1 union
+    select 7, 7, 'مقدماتی جام جهانی اروپا', 'European World Cup qualifiers', 1
 ) where not exists(select * from league);
 
 CREATE TABLE IF NOT EXISTS team (
@@ -66,7 +68,12 @@ INSERT INTO team (id, league_organizer_id, name, name_en, logo) select * from (
     select 13, 8, 'مس رفسنجان', 'Mes Rafsanjan', '13.png' union
     select 14, 8, 'نفت مسجد سلیمان' ,'Naft Masjed Soleyman', '14.png' union
     select 15, 8, 'ماشین سازی' ,'Machine Sazi', '15.png' union
-    select 16, 8, 'سایپا' ,'Saipa F.C.', '16.png'
+    select 16, 8, 'سایپا' ,'Saipa F.C.', '16.png' UNION
+    select 17, 2, 'عراق' ,'Iraq', '17.png' UNION
+    select 18, 2, 'بحرین' ,'Bahrain', '18.png' UNION
+    select 19, 2, 'هنگ کنگ' ,'Hong kong', '19.png' UNION
+    select 20, 2, 'ایران' ,'Iran', '20.png' UNION
+    select 21, 2, 'کامبوج' ,'Cambodia', '21.png'
 ) where not exists(select * from team);
 
 CREATE TABLE IF NOT EXISTS season (
@@ -79,7 +86,8 @@ CREATE TABLE IF NOT EXISTS season (
 );
 
 INSERT INTO season (id, league_id, start_date, end_date, tag) select * from (
-    select 1 id, 1 league_id, '2019' start_date, '2020' end_date, '2019-20' tag
+    select 1 id, 1 league_id, '2019' start_date, '2020' end_date, '2019-20' tag UNION
+    select 2, 6, '2022', '2022', 'Group C'
 ) where not exists(select * from season);
 
 CREATE TABLE IF NOT EXISTS team_season (
@@ -106,7 +114,12 @@ INSERT INTO team_season (id, team_id, season_id) select * from (
     select 13, 13, 1 union
     select 14, 14, 1 union
     select 15, 15, 1 union
-    select 16, 16, 1
+    select 16, 16, 1 union
+    select 17, 17, 2 union
+    select 18, 18, 2 union
+    select 19, 19, 2 union
+    select 20, 20, 2 union
+    select 21, 21, 2
 ) where not exists(select * from team_season);
 
 CREATE TABLE IF NOT EXISTS weekly_match_status (
@@ -135,7 +148,8 @@ CREATE TABLE IF NOT EXISTS weekly_matches (
 );
 
 INSERT INTO weekly_matches (id, weekly_match_status_id, season_id, week_number, start_date, end_date, is_active) select * from (
-    select 1 id, 1 weekly_match_status_id, 1 season_id, 24 week_number, '1400/03/20' start_date, '1400/03/22' end_date, 1 is_active
+    select 1 id, 1 weekly_match_status_id, 1 season_id, 24 week_number, '1400/03/20' start_date, '1400/03/22' end_date, 1 is_active union
+    select 2, 1, 2, 6, '1400/03/13', '1400/03/13', 1
 ) where not exists(select * from weekly_matches);
 
 CREATE TABLE IF NOT EXISTS weekly_matches_competition (
@@ -143,20 +157,24 @@ CREATE TABLE IF NOT EXISTS weekly_matches_competition (
     weekly_matches_id bigint,
     host_team_id bigint,
     guest_team_id bigint,
+    date char(10),
+    time char(5),
     constraint fk_weekly_matches_competition_2_weekly_matches_by_weekly_matches_id FOREIGN KEY (weekly_matches_id) REFERENCES weekly_matches(id),
     constraint fk_weekly_matches_competition_2_team_by_host_team_id FOREIGN KEY (host_team_id) REFERENCES team(id),
     constraint fk_weekly_matches_competition_2_team_by_guest_team_id FOREIGN KEY (guest_team_id) REFERENCES team(id)
 );
 
-INSERT INTO weekly_matches_competition (id, weekly_matches_id, host_team_id, guest_team_id) select * from (
-    select 1 id, 1 weekly_matches_id, 7 host_team_id, 12 guest_team_id union
-    select 2, 1, 1, 14 union
-    select 3, 1, 3, 4 union
-    select 4, 1, 11, 2 union
-    select 5, 1, 9, 16 union
-    select 6, 1, 15, 6 union
-    select 7, 1, 13, 10 union
-    select 8, 1, 5, 8
+INSERT INTO weekly_matches_competition (id, weekly_matches_id, host_team_id, guest_team_id, date, time) select * from (
+    select 1 id, 1 weekly_matches_id, 7 host_team_id, 12 guest_team_id, '1400/03/27' date, '19:00' time  union
+    select 2, 1, 1, 14, '1400/03/27', '19:00' union
+    select 3, 1, 3, 4, '1400/03/27', '19:00' union
+    select 4, 1, 11, 2, '1400/03/27', '19:00' union
+    select 5, 1, 9, 16, '1400/03/27', '19:00' union
+    select 6, 1, 15, 6, '1400/03/27', '19:00' union
+    select 7, 1, 13, 10, '1400/03/27', '19:00' union
+    select 8, 1, 5, 8, '1400/03/27', '19:00' union
+    select 9, 2, 20, 19, '1400/03/13', '19:00' union
+    select 10, 2, 18, 21, '1400/03/13', '21:00'
 ) where not exists(select * from weekly_matches_competition);
 
 CREATE TABLE IF NOT EXISTS prediction_result (
@@ -179,7 +197,6 @@ CREATE TABLE IF NOT EXISTS weekly_matches_competition_result (
     registering_time bigint default 0,
     constraint fk_weekly_matches_competition_result_2_weekly_matches_competition_by_weekly_matches_competition_id FOREIGN KEY (weekly_matches_competition_id) REFERENCES weekly_matches_competition(id)
 );
-
 
 CREATE TABLE IF NOT EXISTS weekly_matches_competition_prediction (
     id bigint primary key,

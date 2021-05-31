@@ -49,8 +49,9 @@ public class MatchesRest {
     @GetMapping(path = "open",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<WeeklyMatchModel>> getWeeklyMatches() {
-        List<WeeklyMatchesEntity> futureWeeklyMatches = weeklyMatchesRepository.
-                findFutureWeeklyMatches("1400/03/18", "1400/03/20");
+        List<WeeklyMatchesEntity> futureWeeklyMatches = weeklyMatchesRepository
+                .findActiveWeeklyMatches();
+//                findFutureWeeklyMatches("1400/03/18", "1400/03/20");
         List<WeeklyMatchModel> models = futureWeeklyMatches.stream()
                 .map(f -> WeeklyMatchModel.builder()
                         .id(f.getId())
@@ -96,6 +97,7 @@ public class MatchesRest {
                         .findById(competitionEntity.getGuestTeamId());
                 if(!any.isPresent()) {
                     competitionModels.add(WeeklyMatchCompetitionModel.builder()
+                            .organizer(guestTeamEntity.get().getLeagueOrganizerEntity().getNameEn())
                             .competitionId(competitionEntity.getId())
                             .hostTeamId(hostTeamEntity.get().getId())
                             .hostTeamLogo(hostTeamEntity.get().getLogo())
@@ -106,6 +108,7 @@ public class MatchesRest {
                             .build());
                 } else {
                     competitionModels.add(WeeklyMatchCompetitionModel.builder()
+                            .organizer(guestTeamEntity.get().getLeagueOrganizerEntity().getNameEn())
                             .competitionId(competitionEntity.getId())
                             .predictionId(any.isPresent() ? any.get().getId() : null)
                             .hostGoals(any.isPresent() ? any.get().getHostGoals() : null)

@@ -61,7 +61,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<GrantedAuthority> authorities = byMobile.getUserRolesEntities().stream()
                 .map(e -> new SimpleGrantedAuthority(e.getRoleName())).collect(Collectors.toList());
 
-        authorities.add(new SimpleGrantedAuthority("ROLE_SITE_OWNER"));
+//        authorities.add(new SimpleGrantedAuthority("ROLE_SITE_OWNER"));
         authorities.add(new SimpleGrantedAuthority("ROLE_AUTHENTICATED"));
         return new UserModel(byMobile.getMobile(),
                 isForm ? byMobile.getFormPassword() : byMobile.getPassword(),

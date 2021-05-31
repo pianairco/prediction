@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WeeklyMatchCompetitionModel {
+    private String organizer;
     private long competitionId;
     private long predictionId;
     private long hostTeamId;
