@@ -18,8 +18,9 @@ CREATE TABLE IF NOT EXISTS users (
 
 INSERT INTO users (id, user_uuid, username, email, mobile, email_verified, password, form_password, locale, given_name, picture_url)
 select * from (select 1 id, 'admin' user_uuid, 'admin' username, 'rahmatii1366@gmail.com' email, '09128855402' mobile,
-                      1 email_verified, '$2a$10$J.qCx8tB1axgUJFqzrk6NupFsQ/ObT1tmhhVVf3MDewdumSwkxsDO' password,
-                      '$2a$10$J.qCx8tB1axgUJFqzrk6NupFsQ/ObT1tmhhVVf3MDewdumSwkxsDO' form_password, 'fa' locale,
+                      1 email_verified,
+                      '$2a$10$2fjZZJRFTRcZmoJwdTc27.46C9djzkBDmnm47PQ4.XrIVfRM9rKpe' password,
+                      '$2a$10$2fjZZJRFTRcZmoJwdTc27.46C9djzkBDmnm47PQ4.XrIVfRM9rKpe' form_password, 'fa' locale,
                       'admin' given_name, 'https://lh3.googleusercontent.com/a-/AOh14Gg8K7kIHhlEo0-oJjPmGBG73ciHeRQnMFuRWRjQ4A=s96-c' picture_url
               ) where not exists(select * from users);
 

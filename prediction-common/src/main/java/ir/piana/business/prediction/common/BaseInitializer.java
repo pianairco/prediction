@@ -5,6 +5,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 public abstract class BaseInitializer {
     protected SpecificSchemaQueryExecutorProvider queryExecutorProvider;
@@ -16,7 +17,7 @@ public abstract class BaseInitializer {
         try (InputStream resourceAsStream = getSupportSql()) {
             if(resourceAsStream != null) {
                 String[] split = new String[0];
-                split = IOUtils.toString(resourceAsStream).split(";");
+                split = IOUtils.toString(resourceAsStream, Charset.forName("utf-8")).split(";");
 
                 for (String script : split) {
                     queryExecutorProvider.executeOnSupport(script);

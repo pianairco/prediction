@@ -63,6 +63,18 @@ export class LoginComponent implements OnInit {
 
   login() {
     console.log(this.loginInfo)
+    if(this.loginInfo.password == null || this.loginInfo.password.length < 6) {
+      alert("رمز عبور باید بیشتر از 5 کاراکتر باشد");
+      return;
+    } else if(this.loginInfo.username == null || this.loginInfo.username.length < 11 ||
+      !this.loginInfo.username.startsWith('0')) {
+      alert("شماره موبایل با الگو مطابقت ندارد");
+      return;
+    } if(this.loginInfo.captcha == null || this.loginInfo.password.length < 5) {
+      alert("کلمه امنیتی باید 5 کاراکتر باشد");
+      return;
+    }
+
     let promise = this.authenticationService.login(this.loginInfo);
     promise.then(appInfo => {
       if(appInfo === "close") {

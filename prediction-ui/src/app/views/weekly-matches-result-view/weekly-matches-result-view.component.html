@@ -23,7 +23,7 @@
          [class.text-center]="(this.resizeService.onResize$ | async) < 1">
           <span [ngStyle]="{'display': (this.resizeService.onResize$ | async) < 1 ? 'none' : 'inline'}">
             {{w.hostTeamName}}</span>
-        <img [src]="'assets/images/team/iran/' + w.hostTeamLogo" class="card-img-top img-thumbnail m-2"
+        <img [src]="'../../../assets/images/team/iran/' + w.hostTeamLogo" class="card-img-top img-thumbnail m-2"
              style="max-width: 32px; max-height: 32px;">
         <span [ngStyle]="{'display': (this.resizeService.onResize$ | async) < 1 ? 'block' : 'none'}">
             {{w.hostTeamName}}</span>
@@ -43,7 +43,7 @@
                [(ngModel)]="w.guestGoals"
                (change)="checkGuestGoals(w)"
                style="display: inline; width: 80px; direction: rtl;">
-        <img [src]="'assets/images/team/iran/' + w.guestTeamLogo" class="card-img-top img-thumbnail m-2"
+        <img [src]="'../../../assets/images/team/iran/' + w.guestTeamLogo" class="card-img-top img-thumbnail m-2"
              style="max-width: 32px; max-height: 32px;">
         <span [ngStyle]="{'display': (this.resizeService.onResize$ | async) <= 1 ? 'block' : 'inline'}">{{w.guestTeamName}}</span>
       </p>
