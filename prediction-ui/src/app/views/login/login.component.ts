@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {PianaStorageService} from "../../services/piana-storage.service";
 import {LoadingService} from "../../services/loading.service";
 import {ConstantService} from "../../services/constant.service";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,7 @@ export class LoginComponent implements OnInit {
   subDomain = null;
 
   constructor(
+    public dialog: MatDialog,
     // private authService: SocialAuthService,
     private pianaStorageService: PianaStorageService,
     private loadingService: LoadingService,
@@ -37,6 +39,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.openDialog()
     console.log("on login component init", this.subDomain)
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
@@ -90,6 +93,17 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  dialogOpened: boolean = false;
+  openDialog() {
+    this.dialogOpened = true;
+    const dialogRef = this.dialog.open(LoginDialog);
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.dialogOpened = false;
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
   async handleClickGoogleSignIn() {
     /*try {
       console.log("xxxxxxxxxx")
@@ -123,3 +137,9 @@ export class LoginComponent implements OnInit {
     }*/
   }
 }
+
+@Component({
+  selector: 'app-login-dialog',
+  templateUrl: 'login-dialog.component.html',
+})
+export class LoginDialog {}

@@ -5,13 +5,11 @@ import ir.piana.business.prediction.module.auth.data.entity.UserEntity;
 import ir.piana.business.prediction.module.auth.model.UserModel;
 import ir.piana.business.prediction.module.competition.data.entity.*;
 import ir.piana.business.prediction.module.competition.data.repository.*;
-import ir.piana.business.prediction.module.competition.model.CompetitionResultModel;
-import ir.piana.business.prediction.module.competition.model.PredictingMatchesModel;
-import ir.piana.business.prediction.module.competition.model.WeeklyMatchCompetitionModel;
-import ir.piana.business.prediction.module.competition.model.WeeklyMatchModel;
+import ir.piana.business.prediction.module.competition.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +22,16 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/modules/competition/weekly-matches")
 public class MatchesRest {
     @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
     private WeeklyMatchesCompetitionPredictionRepository competitionPredictionRepository;
 
     @Autowired
     private WeeklyMatchesRepository weeklyMatchesRepository;
+
+    @Autowired
+    private ScoringRepository scoringRepository;
 
     @Autowired
     private WeeklyMatchesCompetitionRepository competitionRepository;
@@ -180,16 +184,17 @@ public class MatchesRest {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseModel> weeklyMatchesClose(
             @RequestBody Map<String, Long> body) {
-        Optional<WeeklyMatchesEntity> byId = weeklyMatchesRepository.findById(body.get("weekly-matches-id"));
-        if(byId.isPresent() && byId.get().getStatusId() == 1) {
-            byId.get().setStatusId(2);
-            byId.get().setActive(false);
-            weeklyMatchesRepository.save(byId.get());
+        Optional<WeeklyMatchesEntity> weeklyMatchesEntity = weeklyMatchesRepository.findById(body.get("weekly-matches-id"));
+        if(weeklyMatchesEntity.isPresent() && weeklyMatchesEntity.get().getStatusId() == 1) {
+            weeklyMatchesEntity.get().setStatusId(2);
+            weeklyMatchesEntity.get().setActive(false);
+            weeklyMatchesRepository.save(weeklyMatchesEntity.get());
 
             List<WeeklyMatchesCompetitionEntity> competitions = competitionRepository
-                    .findAllByWeeklyMatchesId(byId.get().getId());
+                    .findAllByWeeklyMatchesId(weeklyMatchesEntity.get().getId());
 
             List<WeeklyMatchesCompetitionResultEntity> result = new ArrayList<>();
+            List<ScoringEntity> scoringEntities = new ArrayList<>();
             for(WeeklyMatchesCompetitionEntity competition : competitions) {
                 result.add(WeeklyMatchesCompetitionResultEntity.builder()
                         .hostGoals(0)
@@ -197,9 +202,25 @@ public class MatchesRest {
                         .competitionEntity(competition)
                         .registeringTime(0)
                         .build());
+
+                List<WeeklyMatchesCompetitionPredictionEntity> allByCompetitionEntity = competitionPredictionRepository.
+                        findAllByCompetitionEntity(competition);
+
+                for(WeeklyMatchesCompetitionPredictionEntity predictionEntity : allByCompetitionEntity) {
+                    scoringEntities.add(ScoringEntity.builder()
+                            .isFinal(false)
+                            .score(0)
+                            .step(0)
+                            .hostGoals(predictionEntity.getHostGoals())
+                            .guestGoals(predictionEntity.getGuestGoals())
+                            .competitionEntity(competition)
+                            .userId(predictionEntity.getUserEntity().getId())
+                            .build());
+                }
             }
 
             competitionResultRepository.saveAll(result);
+            scoringRepository.saveAll(scoringEntities);
         }
         return ResponseEntity.ok(ResponseModel.builder().code(0).build());
     }
@@ -211,6 +232,9 @@ public class MatchesRest {
         List<WeeklyMatchesCompetitionResultEntity> resultEntities = competitionResultRepository
                 .findLastResults(weeklyMatchId);
 
+        Optional<WeeklyMatchesEntity> byId = weeklyMatchesRepository.findById(weeklyMatchId);
+        String organizerName = byId.get().getSeasonEntity().getLeagueEntity().getLeagueOrganizerEntity().getNameEn();
+
         List<WeeklyMatchCompetitionModel> competitionModels = new ArrayList<>();
         if(resultEntities != null && !resultEntities.isEmpty()) {
             for(WeeklyMatchesCompetitionResultEntity resultEntity : resultEntities) {
@@ -219,6 +243,7 @@ public class MatchesRest {
                 Optional<TeamEntity> guestTeamEntity = teamRepository
                         .findById(resultEntity.getCompetitionEntity().getGuestTeamId());
                 competitionModels.add(WeeklyMatchCompetitionModel.builder()
+                        .organizer(organizerName)
                         .competitionId(resultEntity.getCompetitionEntity().getId())
                         .hostTeamId(hostTeamEntity.get().getId())
                         .hostTeamLogo(hostTeamEntity.get().getLogo())
@@ -289,8 +314,8 @@ public class MatchesRest {
                 .guestGoals(model.getGuestGoals())
                 .build();
 
-
         competitionResultRepository.save(result);
+        List<ScoringEntity> allByCompetitionEntity = scoringRepository.findAllByCompetitionEntity(result.getCompetitionEntity());
         /*return ResponseEntity.ok(CompetitionResultModel.builder()
                 .competitionId(result.getCompetitionEntity().getId())
                 .weeklyMatchId(result.getCompetitionEntity().getWeeklyMatchesId())
@@ -319,5 +344,24 @@ public class MatchesRest {
 
         competitionResultRepository.saveAll(result);
         return getCompetitionResults(models.get(0).getWeeklyMatchId());
+    }
+
+    @GetMapping(path = "weekly-matches-scores",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Map<String, Object>>> getScorePerWeeklyMatches(
+            @RequestParam("weeklyMatchesId") long weeklyMatchesId) {
+
+        String sql = "select t.mobile, sum( CASEWHEN((shg - sgg = 0 and host_goals - guest_goals = 0) or (shg - sgg > 0 and  host_goals - guest_goals > 0)" +
+                " or (shg - sgg < 0 and  host_goals - guest_goals < 0), 8, 0) + CASEWHEN(shg = host_goals, 4, 0)  + CASEWHEN(sgg = guest_goals, 4, 0)  +" +
+                " CASEWHEN(shg = host_goals and sgg = guest_goals, 4, 0)) score from (\n" +
+                " SELECT u.mobile, s.weekly_matches_competition_id, s.host_goals shg, s.guest_goals sgg, r.host_goals, r.guest_goals FROM users u, SCORING s," +
+                " weekly_matches_competition_result r, (select max(registering_time) registering_time, weekly_matches_competition_id from" +
+                " weekly_matches_competition_result where weekly_matches_competition_id  in (select id from weekly_matches_competition where" +
+                " weekly_matches_id = 2) group by weekly_matches_competition_id) r2 where r.weekly_matches_competition_id = s.weekly_matches_competition_id " +
+                " and r.weekly_matches_competition_id = r2.weekly_matches_competition_id  and r.registering_time = r2.registering_time and u.id = s.user_id) t group by mobile order by score desc";
+
+
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql);
+        return ResponseEntity.ok(maps);
     }
 }

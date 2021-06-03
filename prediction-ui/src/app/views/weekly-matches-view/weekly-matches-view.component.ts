@@ -37,15 +37,19 @@ export class WeeklyMatchesComponent implements OnInit {
     public competitionResultService: WeeklyMatchesCompetitionResultService,
     public weeklyMatchesCompetitionService: WeeklyMatchesCompetitionService,
     private siteCategoryService: SiteCategoryService) {
-    competitionResultService.competitionResultModelsSubject.subscribe(res => {
+    console.log(this.weeklyMatchCompetitions);
+    console.log(this.competitionResults);
+    this.competitionResultService.competitionResultModelsSubject.subscribe(res => {
+      console.log(res);
       this.competitionResults = JSON.parse(JSON.stringify(res));
       this.competitionResults.forEach(cr => {
         this.resMap[cr.competitionId] = cr;
       })
     });
 
-    weeklyMatchesCompetitionService.weeklyMatchCompetitionModelsSubject.subscribe(
+    this.weeklyMatchesCompetitionService.weeklyMatchCompetitionModelsSubject.subscribe(
       res => {
+        console.log(res);
         this.weeklyMatchCompetitions = JSON.parse(JSON.stringify(res));
         // this.weeklyMatchCompetitions.forEach(c => {
         //   console.log(c.hostGoals + ' : ' + c.guestGoals)
@@ -71,6 +75,7 @@ export class WeeklyMatchesComponent implements OnInit {
       if(competitionResult.competitionId == competitionModel.competitionId)
         return competitionResult;
     }
+    // console.log("err", this.competitionResults, competitionModel)
     return null;
   }
 
@@ -89,6 +94,7 @@ export class WeeklyMatchesComponent implements OnInit {
   }
 
   return() {
+    this.competitionResultService.reset();
     this.router.navigate(['/tile/home']);
   }
 }

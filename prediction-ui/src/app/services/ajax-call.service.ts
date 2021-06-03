@@ -17,6 +17,10 @@ export class AjaxCallService {
   }
 
   save(url, obj) {
+    return this.post(url, obj);
+  }
+
+  post(url, obj) {
     return axios.post(this.constantService.getRemoteServer() + "/" + url,
       obj,
       { headers: {"content-type": "application/json"} });

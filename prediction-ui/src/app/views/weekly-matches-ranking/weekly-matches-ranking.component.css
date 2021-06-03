@@ -1,0 +1,19 @@
+.match-selector:hover {
+  background-color: #f8f8e8;
+}
+
+.match-selector {
+  border-bottom: 1px solid #e7c11c;
+}
+
+/*.form-control:disabled {*/
+/*  background-color: red;*/
+/*}*/
+
+/*.host-goals {
+  background-color: #c69500;
+}
+
+.guest-goals {
+  background-color: #759adc;
+}*/

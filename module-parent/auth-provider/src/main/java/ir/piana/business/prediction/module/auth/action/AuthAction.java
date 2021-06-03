@@ -34,7 +34,8 @@ public class AuthAction extends AjaxController.Action {
 //                            .filter(e -> e.getRoleName().equalsIgnoreCase("ROLE_SITE_OWNER"))
 //                            .map(e -> true).findFirst().orElse(false))
                     .isFormPassword(userEntity.getFormPassword() == null ? false : true)
-                    .username(userEntity.getGivenName())
+                    .mobile(userEntity.getMobile())
+                    .username(userEntity.getMobile())
                     .email(userEntity.getEmail())
                     .pictureUrl(userEntity.getPictureUrl())
                     .build();

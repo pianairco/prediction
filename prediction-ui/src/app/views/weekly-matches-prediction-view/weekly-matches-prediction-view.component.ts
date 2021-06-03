@@ -9,6 +9,7 @@ import {
 } from "../../services/weekly-mathes-competition.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ScreenSizeService} from "../../services/screen-size.service";
+import {WeeklyMatchesCompetitionPredictionService} from "../../services/weekly-mathes-competition-prediction.service";
 
 @Component({
   selector: 'app-weekly-matches-prediction-view',
@@ -26,9 +27,9 @@ export class WeeklyMatchesPredictionComponent implements OnInit {
     private route: ActivatedRoute,
     private pianaStorageService: PianaStorageService,
     private restClientService: RestClientService,
-    public weeklyMatchesCompetitionService: WeeklyMatchesCompetitionService,
+    public weeklyMatchesCompetitionPredictionService: WeeklyMatchesCompetitionPredictionService,
     private siteCategoryService: SiteCategoryService) {
-    weeklyMatchesCompetitionService.weeklyMatchCompetitionModelsSubject.subscribe(
+    weeklyMatchesCompetitionPredictionService.weeklyMatchCompetitionModelsSubject.subscribe(
       res => {
         this.weeklyMatchCompetitions = JSON.parse(JSON.stringify(res));
         // this.weeklyMatchCompetitions.forEach(c => {
@@ -45,7 +46,7 @@ export class WeeklyMatchesPredictionComponent implements OnInit {
       this.weeklyMatchesId = +params['weeklyMatchesId']; // (+) converts string 'id' to a number
       // In a real app: dispatch action to load the details here.
       console.log(this.weeklyMatchesId)
-      this.weeklyMatchesCompetitionService.fetch(this.weeklyMatchesId);
+      this.weeklyMatchesCompetitionPredictionService.fetch(this.weeklyMatchesId);
     });
   }
 
@@ -55,12 +56,12 @@ export class WeeklyMatchesPredictionComponent implements OnInit {
       predictingMatchesModel.push(new PredictingMatchesModel(
         this.weeklyMatchesId, c.competitionId, c.predictionId, c.hostGoals, c.guestGoals));
     });
-    this.weeklyMatchesCompetitionService.register(predictingMatchesModel)
+    this.weeklyMatchesCompetitionPredictionService.register(predictingMatchesModel)
   }
 
   reset() {
-    console.log(this.weeklyMatchesCompetitionService.weeklyMatchCompetitionModels)
-    this.weeklyMatchesCompetitionService.sameEmit();
+    console.log(this.weeklyMatchesCompetitionPredictionService.weeklyMatchCompetitionModels)
+    this.weeklyMatchesCompetitionPredictionService.sameEmit();
   }
 
   return() {

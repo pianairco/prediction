@@ -3,3 +3,7 @@ GET https://piana.ir:8443/api/modules/competition/weekly-matches/open
 ###
 GET https://piana.ir:8443/api/modules/competition/weekly-matches/competitions?weeklyMatchId=1
 api/modules/competition/weekly-matches/competitions
+
+###
+GET https://piana.ir:8443/api/modules/competition/weekly-matches/weekly-matches-scores?weeklyMatchesId=2
+

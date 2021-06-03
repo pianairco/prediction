@@ -19,4 +19,5 @@ public interface WeeklyMatchesCompetitionPredictionRepository
             @Param("userId") long userId,
             @Param("weeklyMatchId") List<Long> weeklyMatchId);
     List<WeeklyMatchesCompetitionPredictionEntity> findAllByCompetitionEntity(WeeklyMatchesCompetitionEntity competitionEntity);
+
 }

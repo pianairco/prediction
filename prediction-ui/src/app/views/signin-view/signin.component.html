@@ -1,0 +1,52 @@
+<main class="form-signin text-center">
+  <form>
+    <img class="mb-4" src="assets/images/login-logo.png" alt="" width="72" height="57">
+    <h1 class="h3 mb-4 fw-normal">ثبت نام کاربر جدید</h1>
+
+    <div class="form-floating mb-2">
+      <input type="tel" class="form-control" id="floatingInput"
+             name="mobile"
+             [mask]="'0000 000 00 00'"
+             [(ngModel)]="signinInfo.mobile">
+      <label for="floatingInput">شماره موبایل</label>
+    </div>
+    <ng-container *ngIf="signinService.activationCodeSubject | async">
+      <div class="form-floating mb-2">
+        <input type="number" class="form-control" id="activationCode"
+               name="activationCode"
+               [(ngModel)]="signinInfo.activationCode">
+        <label for="activationCode">یکبار رمز</label>
+      </div>
+
+      <div class="form-floating mb-2">
+        <input type="password" class="form-control" id="floatingPassword"
+               name="password"
+               [(ngModel)]="signinInfo.password">
+        <label for="floatingPassword">رمز ورود</label>
+      </div>
+
+      <div class="form-floating mb-2">
+        <input type="password" class="form-control" id="floatingPasswordRepeat"
+               name="passwordRepeat"
+               [(ngModel)]="signinInfo.passwordRepeat">
+        <label for="floatingPasswordRepeat">تکرار رمز ورود</label>
+      </div>
+
+      <div class="form-floating mb-2">
+        <input class="form-control" type="text" id="floatingCaptcha"
+               maxlength="5"
+               name="captcha"
+               [(ngModel)]="signinInfo.captcha">
+        <label for="floatingCaptcha">
+          <img [src]="getLinkPicture()" style="height: 31px"/>
+        </label>
+      </div>
+    </ng-container>
+
+    <button *ngIf="!(signinService.activationCodeSubject | async)"
+      class="w-100 btn btn-lg btn-primary" type="submit" (click)="requestActivationCode()">درخواست کد</button>
+    <button *ngIf="signinService.activationCodeSubject | async"
+            class="w-100 btn btn-lg btn-primary" type="submit" (click)="signin()">ارسال</button>
+    <p class="mt-5 mb-3 text-muted">© پیش بینی نتایج فوتبال</p>
+  </form>
+</main>

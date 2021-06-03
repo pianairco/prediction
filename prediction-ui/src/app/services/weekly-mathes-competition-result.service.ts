@@ -23,6 +23,10 @@ export class WeeklyMatchesCompetitionResultService {
     this.competitionResultModels = this._competitionResultModels;
   }
 
+  reset() {
+    this.competitionResultModels = [];
+  }
+
   fetch(weeklyMatchesId: number) {
     this.restClientService.getCompetitionsResult(weeklyMatchesId).then(res => {
       // console.log(res)

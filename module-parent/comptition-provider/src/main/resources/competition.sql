@@ -214,6 +214,8 @@ CREATE TABLE IF NOT EXISTS scoring (
     user_id bigint,
     score bigint,
     step bigint,
+    host_goals bigint,
+    guest_goals bigint,
     is_final bigint,
     constraint fk_scoring_2_weekly_matches_competition_by_weekly_matches_competition_id FOREIGN KEY (weekly_matches_competition_id) REFERENCES weekly_matches_competition(id),
     constraint fk_scoring_2_user_by_user_id FOREIGN KEY (user_id) REFERENCES users(id)

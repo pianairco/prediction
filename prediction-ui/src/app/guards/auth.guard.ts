@@ -37,11 +37,20 @@ export class AuthGuard implements CanActivate {
     // console.log(route)
     // console.log(localStorage.getItem('currentUser'));
     let appInfo = this.authenticationService.appInfo;
-    // console.log(appInfo);
+    console.log(appInfo);
     // console.log("subdomain0", state['url']);
     // return false;
     if(state['url'].startsWith('login') || state['url'].startsWith('/login')) {
-      console.log("subdomain00", state.root.queryParams['subDomain']);
+      if(appInfo === null || appInfo['isLoggedIn'] === false) {
+        console.log("subdomain01", state['url']);
+        // if((route['routeConfig']['path'].startsWith('login') || route['routeConfig']['path'].startsWith('/login')) && localStorage.getItem('currentUser')) {
+        // this.router.navigate(['/home'], { queryParams: { returnUrl: state.url }});
+        return true;
+      } else {
+        this.router.navigate(['/tile/home']);
+        return false;
+      }
+    } else if(state['url'].startsWith('signin') || state['url'].startsWith('/signin')) {
       if(appInfo === null || appInfo['isLoggedIn'] === false) {
         console.log("subdomain01", state['url']);
         // if((route['routeConfig']['path'].startsWith('login') || route['routeConfig']['path'].startsWith('/login')) && localStorage.getItem('currentUser')) {
@@ -52,16 +61,19 @@ export class AuthGuard implements CanActivate {
         return false;
       }
     } else if(state['url'].startsWith('logout') || state['url'].startsWith('/logout')) {
-      // console.log("gaurd => logout", this.authenticationService.appInfo)
+      console.log("gaurd => logout", this.authenticationService.appInfo)
       if(appInfo === null || appInfo['isLoggedIn'] === false) {
+        console.log("appInfo", appInfo)
         // if((route['routeConfig']['path'].startsWith('login') || route['routeConfig']['path'].startsWith('/login')) && localStorage.getItem('currentUser')) {
         // this.router.navigate(['/home'], { queryParams: { returnUrl: state.url }});
+        this.router.navigate(['/login']);
         return false;
       } else {
         try {
           this.authenticationService.logout();
           return true;
         } catch (err) {
+          console.log('error')
           return false;
         }
       }

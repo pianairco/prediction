@@ -40,7 +40,8 @@ export class AuthenticationService {
       this.appInfo = res['data'];
       // console.log(appInfo);
       // console.log(JSON.stringify(appInfo));
-      // console.log(localStorage.getItem('appInfo'));
+      console.log(this.pianaStorageService.getObject('appInfo'));
+      console.log(localStorage.getItem('appInfo'));
 
       this.pianaStorageService.putObject('appInfo', this.appInfo);
       console.log(this.pianaStorageService.getObject('appInfo'));
@@ -129,7 +130,8 @@ export class AuthenticationService {
     console.log("auth service logout")
     // remove user from local storage to log user out
     try {
-      let appInfo = this.pianaStorageService.getObject('appInfo');
+      let appInfo = this.appInfo
+      // let appInfo = this.pianaStorageService.getObject('appInfo');
       console.log(appInfo)
       if(appInfo == null)
         return;

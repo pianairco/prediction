@@ -1,6 +1,6 @@
-<main class="form-signin text-center">
+<main class="form-signin text-center" *ngIf="!dialogOpened">
   <form>
-    <img class="mb-4" src="../../../assets/images/login-logo.png" alt="" width="72" height="57">
+    <img class="mb-4" src="assets/images/login-logo.png" alt="" width="72" height="57">
     <h1 class="h3 mb-4 fw-normal">ورود به حساب کاربری</h1>
 
     <div class="form-floating mb-2">
@@ -26,7 +26,9 @@
       </label>
     </div>
 
-    <button class="w-100 btn btn-lg btn-primary" type="submit" (click)="login()">ورود</button>
+    <button class="w-100 btn btn-lg btn-outline-success" type="submit" (click)="login()">ورود</button>
     <p class="mt-5 mb-3 text-muted">© پیش بینی نتایج فوتبال</p>
+    <a class="btn btn-outline-warning" (click)="openDialog()">فراموشی رمز ورود</a>
+<!--    <a [routerLink]="['/signin']" class="btn btn-outline-warning">ثبت نام</a>-->
   </form>
 </main>

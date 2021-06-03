@@ -1,7 +1,6 @@
 import {Injectable, Injector} from '@angular/core';
 import {ConstantService} from "./constant.service";
 import {AjaxCallService} from "./ajax-call.service";
-import {log} from "util";
 import {PredictingMatchesModel} from "./weekly-mathes-competition.service";
 import {CompetitionResultModel} from "./weekly-mathes-competition-result.service";
 
@@ -10,6 +9,7 @@ import {CompetitionResultModel} from "./weekly-mathes-competition-result.service
 })
 export class RestClientService {
   ajaxUrlMap = {
+    module: 'api/modules',
     site: 'api/modules/site',
     siteCategory: 'api/modules/site/category',
     weeklyMatches: 'api/modules/competition/weekly-matches'
@@ -19,6 +19,10 @@ export class RestClientService {
 
   constructor(private constantService: ConstantService,
               private ajaxCallService: AjaxCallService) { }
+
+  requestActivationCode(mobile) {
+    return this.ajaxCallService.post(this.ajaxUrlMap.module + '/auth/activation-code', {'mobile': mobile});
+  }
 
   getAllSites() {
     return this.ajaxCallService.read(this.ajaxUrlMap.site + '/all-sites');
@@ -39,6 +43,10 @@ export class RestClientService {
   closeWeeklyMatches(weeklyMatchesId: number) {
     return this.ajaxCallService.update(this.ajaxUrlMap.weeklyMatches + '/weekly-matches-close',
       { "weekly-matches-id": weeklyMatchesId });
+  }
+
+  getWeeklyMatchesRanking(weeklyMatchesId: number) {
+    return this.ajaxCallService.read(this.ajaxUrlMap.weeklyMatches + '/weekly-matches-scores?weeklyMatchesId=' + weeklyMatchesId);
   }
 
   getWeeklyMatchesCompetitions(weeklyMatchesId: number) {

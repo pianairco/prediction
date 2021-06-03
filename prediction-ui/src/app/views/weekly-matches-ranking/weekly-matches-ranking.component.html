@@ -1,0 +1,51 @@
+<div class="container-fluid" *ngIf="weeklyMatchRankingModels" >
+  <div class="row justify-content-center py-2" style="border-bottom: 1px solid #e7c11c;">
+    <div class="col-6 ">
+      <p [class.text-end]="(this.resizeService.onResize$ | async) >= 1"
+         [class.text-center]="(this.resizeService.onResize$ | async) < 1">
+          <span [ngStyle]="{'display': (this.resizeService.onResize$ | async) < 1 ? 'block' : 'inline'}">
+            موبایل</span>
+      </p>
+    </div>
+    <div class="col-6 ">
+      <p class="text-start"
+         [class.text-start]="(this.resizeService.onResize$ | async) >= 1"
+         [class.text-center]="(this.resizeService.onResize$ | async) < 1">
+        <span [ngStyle]="{'display': (this.resizeService.onResize$ | async) <= 1 ? 'block' : 'inline'}">
+          امتیاز</span>
+      </p>
+      </div>
+  </div>
+  <div class="row justify-content-center py-2 match-selector"
+       [ngStyle]="{'border-bottom-left-radius': (this.resizeService.onResize$ | async) < 3 ? '0px' : '80px'}"
+       [ngStyle]="{'font-size': (this.resizeService.onResize$ | async) < 3 ? '10px' : '20px'}"
+       *ngFor="let w of weeklyMatchRankingModels; let i = index" [attr.data-index]="i">
+<!--       *ngFor="let w of (weeklyMatchesCompetitionService.weeklyMatchCompetitionModelsSubject | async)">-->
+    <div class="col-6 ">
+      <p [class.text-end]="(this.resizeService.onResize$ | async) >= 1"
+         [class.text-center]="(this.resizeService.onResize$ | async) < 1">
+        <span *ngIf="isFirst(w)" class="mx-2"
+              [ngStyle]="{'display': (this.resizeService.onResize$ | async) < 1 ? 'block' : 'inline'}">
+            <i class="fa fa-star" style="color: #f1b709"></i>
+        </span>
+        <span class="badge bg-primary mx-2" dir="ltr">{{i+1}}</span>
+        <span [ngStyle]="{'display': (this.resizeService.onResize$ | async) < 1 ? 'block' : 'inline'}">
+          {{w['MOBILE']}}</span>
+      </p>
+    </div>
+    <div class="col-6 has-text-left">
+      <p class="text-start"
+         [class.text-start]="(this.resizeService.onResize$ | async) >= 1"
+         [class.text-center]="(this.resizeService.onResize$ | async) < 1">
+        <span [ngStyle]="{'display': (this.resizeService.onResize$ | async) <= 1 ? 'block' : 'inline'}">
+          {{w['SCORE']}}</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="row justify-content-center py-4">
+    <div class="columns col-12 col-md-6 text-center">
+      <button class="btn btn-warning mx-1" (click)="return()">بازگشت</button>
+    </div>
+  </div>
+</div>

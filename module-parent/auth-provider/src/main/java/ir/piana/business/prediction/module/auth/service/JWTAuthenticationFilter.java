@@ -232,7 +232,8 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
                         .filter(e -> e.getAuthority().equalsIgnoreCase("ROLE_ADMIN"))
                         .map(e -> true).findFirst().orElse(false))
                 .isFormPassword(userEntity.getFormPassword() == null ? false : true)
-                .username(userEntity.getGivenName())
+                .mobile(userEntity.getMobile())
+                .username(userEntity.getMobile())
                 .email(userEntity.getEmail())
                 .pictureUrl(userEntity.getPictureUrl())
                 .build();

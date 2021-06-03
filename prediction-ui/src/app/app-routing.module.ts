@@ -11,6 +11,8 @@ import {WeeklyMatchesResultComponent} from "./views/weekly-matches-result-view/w
 import {AdminGuard} from "./guards/admin.guard";
 import {WeeklyMatchesPredictionComponent} from "./views/weekly-matches-prediction-view/weekly-matches-prediction-view.component";
 import {MatchesRankingComponent} from "./views/matches-ranking-view/matches-ranking-view.component";
+import {SigninComponent} from "./views/signin-view/signin.component";
+import {WeeklyMatchesRankingComponent} from "./views/weekly-matches-ranking/weekly-matches-ranking.component";
 
 const routes: Routes = [
   {
@@ -20,6 +22,7 @@ const routes: Routes = [
           { path: 'tile', component: TileComponent, children:[
               { path: '', redirectTo: '/home', pathMatch: 'full' },
               { path: 'home', component: HomeViewComponent },
+              { path: 'weekly-matches-score/:weeklyMatchesId', component: WeeklyMatchesRankingComponent },
               { path: 'weekly-matches-result/:weeklyMatchesId', component: WeeklyMatchesResultComponent },
               { path: 'weekly-matches-prediction/:weeklyMatchesId', component: WeeklyMatchesPredictionComponent },
               { path: 'weekly-matches-view/:weeklyMatchesId', component: WeeklyMatchesComponent },
@@ -30,6 +33,7 @@ const routes: Routes = [
         ]
       },
       { path: 'login', component: LoginComponent, canActivate:[AuthGuard] },
+      // { path: 'signin', component: SigninComponent, canActivate:[AuthGuard] },
       { path: 'logout', component: LoginComponent, canActivate:[AuthGuard] },
     ]
   },

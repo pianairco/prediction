@@ -7,7 +7,7 @@ import {FooterComponent} from './components/footer/footer.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HomeViewComponent} from './views/home-view/home-view.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {LoginComponent} from './views/login/login.component';
+import {LoginComponent, LoginDialog} from './views/login/login.component';
 import {PageNotFoundComponent} from './views/page-not-found/page-not-found.component';
 import {TileComponent} from './views/tile/tile.component';
 import {InitializerService} from "./services/initializer.service";
@@ -29,6 +29,10 @@ import {WeeklyMatchesComponent} from "./views/weekly-matches-view/weekly-matches
 import {WeeklyMatchesResultComponent} from "./views/weekly-matches-result-view/weekly-matches-result-view.component";
 import {WeeklyMatchesPredictionComponent} from "./views/weekly-matches-prediction-view/weekly-matches-prediction-view.component";
 import {MatchesRankingComponent} from "./views/matches-ranking-view/matches-ranking-view.component";
+import {SigninComponent} from "./views/signin-view/signin.component";
+import {NgxMaskModule} from "ngx-mask";
+import {MatDialogModule} from "@angular/material/dialog";
+import {WeeklyMatchesRankingComponent} from "./views/weekly-matches-ranking/weekly-matches-ranking.component";
 
 @NgModule({
   declarations: [
@@ -36,12 +40,15 @@ import {MatchesRankingComponent} from "./views/matches-ranking-view/matches-rank
     TopbarComponent,
     FooterComponent,
     PageNotFoundComponent,
+    LoginDialog,
     LoginComponent,
+    SigninComponent,
     TileComponent,
     HomeViewComponent,
     WeeklyMatchesComponent,
     WeeklyMatchesResultComponent,
     WeeklyMatchesPredictionComponent,
+    WeeklyMatchesRankingComponent,
     MatchesRankingComponent,
     FormMakerComponent,
     NotificationComponent,
@@ -62,6 +69,8 @@ import {MatchesRankingComponent} from "./views/matches-ranking-view/matches-rank
     ReactiveFormsModule,
     // SocialLoginModule,
     TextMaskModule,
+    NgxMaskModule.forRoot(),
+    MatDialogModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
