@@ -10,6 +10,8 @@ import {
 import {ActivatedRoute, Router} from "@angular/router";
 import {ScreenSizeService} from "../../services/screen-size.service";
 import {WeeklyMatchesCompetitionPredictionService} from "../../services/weekly-mathes-competition-prediction.service";
+import {LoginDialog} from "../login/login.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-weekly-matches-prediction-view',
@@ -22,6 +24,7 @@ export class WeeklyMatchesPredictionComponent implements OnInit {
   public weeklyMatchCompetitions: WeeklyMatchCompetitionModel[] = [];
 
   constructor(
+    public dialog: MatDialog,
     private router: Router,
     public resizeService: ScreenSizeService,
     private route: ActivatedRoute,
@@ -42,6 +45,7 @@ export class WeeklyMatchesPredictionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.openDialog()
     this.subWeeklyMatchesId = this.route.params.subscribe(params => {
       this.weeklyMatchesId = +params['weeklyMatchesId']; // (+) converts string 'id' to a number
       // In a real app: dispatch action to load the details here.
@@ -67,4 +71,22 @@ export class WeeklyMatchesPredictionComponent implements OnInit {
   return() {
     this.router.navigate(['/tile/home']);
   }
+
+  dialogOpened: boolean = false;
+
+  openDialog() {
+    this.dialogOpened = true;
+    const dialogRef = this.dialog.open(PredictionDialog);
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.dialogOpened = false;
+      console.log(`Dialog result: ${result}`);
+    });
+  }
 }
+
+@Component({
+  selector: 'app-prediction-dialog',
+  templateUrl: 'prediction-dialog.component.html',
+})
+export class PredictionDialog {}

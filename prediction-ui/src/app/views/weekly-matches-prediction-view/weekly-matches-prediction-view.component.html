@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" *ngIf="!dialogOpened">
   <div class="row justify-content-center py-2 match-selector"
        [ngStyle]="{'border-bottom-left-radius': (this.resizeService.onResize$ | async) < 3 ? '0px' : '80px'}"
        [ngStyle]="{'font-size': (this.resizeService.onResize$ | async) < 3 ? '10px' : '20px'}"

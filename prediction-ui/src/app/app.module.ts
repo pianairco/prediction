@@ -27,12 +27,16 @@ import {ServiceWorkerModule} from "@angular/service-worker";
 import {environment} from "../environments/environment";
 import {WeeklyMatchesComponent} from "./views/weekly-matches-view/weekly-matches-view.component";
 import {WeeklyMatchesResultComponent} from "./views/weekly-matches-result-view/weekly-matches-result-view.component";
-import {WeeklyMatchesPredictionComponent} from "./views/weekly-matches-prediction-view/weekly-matches-prediction-view.component";
+import {
+  PredictionDialog,
+  WeeklyMatchesPredictionComponent
+} from "./views/weekly-matches-prediction-view/weekly-matches-prediction-view.component";
 import {MatchesRankingComponent} from "./views/matches-ranking-view/matches-ranking-view.component";
 import {SigninComponent} from "./views/signin-view/signin.component";
 import {NgxMaskModule} from "ngx-mask";
 import {MatDialogModule} from "@angular/material/dialog";
 import {WeeklyMatchesRankingComponent} from "./views/weekly-matches-ranking/weekly-matches-ranking.component";
+import {WarningDialogComponent} from "./components/warning-dialog/warning-dialog.component";
 
 @NgModule({
   declarations: [
@@ -41,6 +45,7 @@ import {WeeklyMatchesRankingComponent} from "./views/weekly-matches-ranking/week
     FooterComponent,
     PageNotFoundComponent,
     LoginDialog,
+    WarningDialogComponent,
     LoginComponent,
     SigninComponent,
     TileComponent,
@@ -48,6 +53,7 @@ import {WeeklyMatchesRankingComponent} from "./views/weekly-matches-ranking/week
     WeeklyMatchesComponent,
     WeeklyMatchesResultComponent,
     WeeklyMatchesPredictionComponent,
+    PredictionDialog,
     WeeklyMatchesRankingComponent,
     MatchesRankingComponent,
     FormMakerComponent,

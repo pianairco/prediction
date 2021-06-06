@@ -6,6 +6,8 @@ import {PianaStorageService} from "../../services/piana-storage.service";
 import {LoadingService} from "../../services/loading.service";
 import {ConstantService} from "../../services/constant.service";
 import {MatDialog} from "@angular/material/dialog";
+import {PredictionDialog} from "../weekly-matches-prediction-view/weekly-matches-prediction-view.component";
+import {WarningDialogComponent} from "../../components/warning-dialog/warning-dialog.component";
 
 @Component({
   selector: 'app-login',
@@ -66,15 +68,20 @@ export class LoginComponent implements OnInit {
 
   login() {
     console.log(this.loginInfo)
-    if(this.loginInfo.password == null || this.loginInfo.password.length < 6) {
-      alert("رمز عبور باید بیشتر از 5 کاراکتر باشد");
+    if(this.loginInfo.username == null || this.loginInfo.username.length == 0) {
+      this.openWarningDialog('خطا', 'شماره موبایل را وارد نمایید')
+      // alert("رمز عبور باید بیشتر از 5 کاراکتر باشد");
       return;
     } else if(this.loginInfo.username == null || this.loginInfo.username.length < 11 ||
       !this.loginInfo.username.startsWith('0')) {
-      alert("شماره موبایل با الگو مطابقت ندارد");
+      this.openWarningDialog('خطا', "شماره موبایل با الگو مطابقت ندارد");
       return;
-    } if(this.loginInfo.captcha == null || this.loginInfo.password.length < 5) {
-      alert("کلمه امنیتی باید 5 کاراکتر باشد");
+    } else if(this.loginInfo.password == null || this.loginInfo.password.length < 6) {
+      this.openWarningDialog('خطا', 'رمز عبور باید بیشتر از 5 کاراکتر باشد')
+      // alert("رمز عبور باید بیشتر از 5 کاراکتر باشد");
+      return;
+    } if(this.loginInfo.captcha == null || this.loginInfo.captcha.length < 5) {
+      this.openWarningDialog('خطا', "کلمه امنیتی باید 5 کاراکتر باشد");
       return;
     }
 
@@ -88,7 +95,8 @@ export class LoginComponent implements OnInit {
         this.router.navigate([this.returnUrl]);
       }
     }, err => {
-      console.log(err);
+      this.openWarningDialog('خطا', err)
+      console.log(err, err['code']);
       this.captchaCounter++;
     });
   }
@@ -97,6 +105,19 @@ export class LoginComponent implements OnInit {
   openDialog() {
     this.dialogOpened = true;
     const dialogRef = this.dialog.open(LoginDialog);
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.dialogOpened = false;
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+  openWarningDialog(title, message) {
+    this.dialogOpened = true;
+    const dialogRef = this.dialog.open(WarningDialogComponent, {
+      width: '250px',
+      data: {title: title, message: message}
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       this.dialogOpened = false;
