@@ -2,6 +2,8 @@ package ir.piana.business.prediction.module.auth.rest;
 
 import ir.piana.business.prediction.common.data.cache.AppDataCache;
 import ir.piana.business.prediction.common.exceptions.HttpCommonRuntimeException;
+import ir.piana.business.prediction.common.util.CryptographyUtil;
+import ir.piana.business.prediction.common.util.PKCS1ToSubjectPublicKeyInfo;
 import ir.piana.business.prediction.module.auth.action.AuthAction;
 import ir.piana.business.prediction.module.auth.data.entity.UserEntity;
 import ir.piana.business.prediction.module.auth.data.repository.UserRepository;
@@ -11,6 +13,12 @@ import ir.piana.business.prediction.module.auth.model.SiteInfo;
 import ir.piana.business.prediction.module.auth.model.UserModel;
 import ir.piana.business.prediction.module.auth.service.CrossDomainAuthenticationService;
 import nl.captcha.Captcha;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.bouncycastle.crypto.AsymmetricBlockCipher;
+import org.bouncycastle.crypto.engines.RSAEngine;
+import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
+import org.bouncycastle.pqc.crypto.util.PublicKeyFactory;
+import org.bouncycastle.util.encoders.Base64Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -21,17 +29,27 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import sun.misc.BASE64Decoder;
 
 import javax.annotation.PostConstruct;
+import javax.crypto.Cipher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
 public class AuthRest {
+    @Autowired
+    private CryptographyUtil cryptographyUtil;
+
     @Autowired
     private AuthAction authAction;
 
@@ -112,7 +130,11 @@ public class AuthRest {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppInfo> getAppInfo(HttpServletRequest request,
                                               @RequestBody Map<String, Object> body,
-                                              HttpSession session) {
+                                              HttpSession session) throws Exception {
+        /*java.security.Security.addProvider(
+                new org.bouncycastle.jce.provider.BouncyCastleProvider()
+        );*/
+
         return authAction.appInfo.apply(request, body);
 
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

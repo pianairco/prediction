@@ -3,6 +3,8 @@ import axios from "axios";
 import {PianaStorageService} from "./piana-storage.service";
 import {LoadingService} from "./loading.service";
 import {ConstantService} from "./constant.service";
+import keypair from "keypair";
+import {JSEncrypt} from "jsencrypt";
 // import {GoogleLoginProvider, SocialAuthService} from "angularx-social-login";
 
 /*const googleLoginOptions = {
@@ -34,10 +36,18 @@ export class AuthenticationService {
   }
 
   async getAppInfo() {
-    let res = await axios.post('api/app-info', {}, {headers: {}});
+    var pair = keypair();
+    console.log(pair);
+    let res = await axios.post('api/app-info', { 'public-key': pair.public }, {headers: {}});
     if (res.status === 200) {
       console.log(res['data'])
       this.appInfo = res['data'];
+
+      console.log(res['data']['siteInfo']['title'])
+      let encrypt = new JSEncrypt({ 'default_key_size': '2048' });
+      encrypt.setKey(pair.private);
+      console.log(encrypt.decrypt(res['data']['siteInfo']['title']));
+
       // console.log(appInfo);
       // console.log(JSON.stringify(appInfo));
       console.log(this.pianaStorageService.getObject('appInfo'));
