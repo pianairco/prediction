@@ -357,11 +357,11 @@ public class MatchesRest {
                 " SELECT u.mobile, s.weekly_matches_competition_id, s.host_goals shg, s.guest_goals sgg, r.host_goals, r.guest_goals FROM users u, SCORING s," +
                 " weekly_matches_competition_result r, (select max(registering_time) registering_time, weekly_matches_competition_id from" +
                 " weekly_matches_competition_result where weekly_matches_competition_id  in (select id from weekly_matches_competition where" +
-                " weekly_matches_id = 2) group by weekly_matches_competition_id) r2 where r.weekly_matches_competition_id = s.weekly_matches_competition_id " +
+                " weekly_matches_id = ?) group by weekly_matches_competition_id) r2 where r.weekly_matches_competition_id = s.weekly_matches_competition_id " +
                 " and r.weekly_matches_competition_id = r2.weekly_matches_competition_id  and r.registering_time = r2.registering_time and u.id = s.user_id) t group by mobile order by score desc";
 
 
-        List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql);
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql, weeklyMatchesId);
         return ResponseEntity.ok(maps);
     }
 }
