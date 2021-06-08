@@ -54,8 +54,8 @@ public class CryptographyUtil {
 
         SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
 
-        // 512 is keysize
-        keyGen.initialize(512, random);
+        // 2048 is keysize
+        keyGen.initialize(2048, random);
 
         KeyPair generateKeyPair = keyGen.generateKeyPair();
         return generateKeyPair;

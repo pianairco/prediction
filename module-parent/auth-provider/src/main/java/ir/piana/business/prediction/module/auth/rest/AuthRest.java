@@ -131,10 +131,6 @@ public class AuthRest {
     public ResponseEntity<AppInfo> getAppInfo(HttpServletRequest request,
                                               @RequestBody Map<String, Object> body,
                                               HttpSession session) throws Exception {
-        /*java.security.Security.addProvider(
-                new org.bouncycastle.jce.provider.BouncyCastleProvider()
-        );*/
-
         return authAction.appInfo.apply(request, body);
 
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

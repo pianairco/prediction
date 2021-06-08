@@ -22,4 +22,5 @@ public class AppInfo {
     @JsonProperty("isAdmin")
     private boolean isAdmin;
     private SiteInfo siteInfo;
+    private String publicKey;
 }

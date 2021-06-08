@@ -11,12 +11,14 @@ import com.google.api.services.oauth2.model.Userinfo;
 import ir.piana.business.prediction.common.data.cache.AppDataCache;
 import ir.piana.business.prediction.common.exceptions.HttpCommonRuntimeException;
 import ir.piana.business.prediction.common.util.CommonUtils;
+import ir.piana.business.prediction.module.auth.action.AuthAction;
 import ir.piana.business.prediction.module.auth.data.entity.UserEntity;
 import ir.piana.business.prediction.module.auth.data.repository.UserRepository;
 import ir.piana.business.prediction.module.auth.model.*;
 import nl.captcha.Captcha;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,9 +47,11 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
     private CrossDomainAuthenticationService crossDomainAuthenticationService;
     private AppDataCache appDataCache;
     private NetHttpTransport netHttpTransport;
+    private AuthAction authAction;
 
     public JWTAuthenticationFilter(
             String loginUrl,
+            AuthAction authAction,
             AuthenticationManager authenticationManager,
             BCryptPasswordEncoder bCryptPasswordEncoder,
             UserRepository googleUserRepository,
@@ -55,6 +59,7 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
             AppDataCache appDataCache,
             Environment env) {
         super(new AntPathRequestMatcher(loginUrl));
+        this.authAction = authAction;
         this.authenticationManager = authenticationManager;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.googleUserRepository = googleUserRepository;
@@ -195,7 +200,8 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        AppInfo appInfo = authAction.getAppInfo(request, null);
+        /*SecurityContextHolder.getContext().setAuthentication(auth);
         UserEntity userEntity = ((UserModel)auth.getPrincipal()).getUserEntity();
 //        GoogleUserEntity userEntity = googleUserRepository.findByEmail(((User) auth.getPrincipal()).getUsername());
         String token = JWT.create()
@@ -214,7 +220,7 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
         role_owner = auth.getAuthorities().stream()
                 .filter(e -> e.getAuthority().equalsIgnoreCase("ROLE_ADMIN")).findAny();
 
-        /*AppInfo appInfo = AppInfo.builder()
+        *//*AppInfo appInfo = AppInfo.builder()
                 .isLoggedIn(true)
                 .isAdmin(role_owner.isPresent())
 //                .isAdmin(userEntity.getUserRolesEntities().stream()
@@ -224,7 +230,7 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
                 .username(userEntity.getGivenName())
                 .email(userEntity.getEmail())
                 .pictureUrl(userEntity.getPictureUrl())
-                .build();*/
+                .build();*//*
 
         AppInfo appInfo = AppInfo.builder()
                 .isLoggedIn(true)
@@ -247,7 +253,7 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
                 .instagramLink("prediction")
                 .whatsappLink("prediction")
                 .telNumber("prediction")
-                .build());
+                .build());*/
 
         res.setStatus(HttpStatus.OK.value());
         res.setContentType("application/json;charset=UTF-8");

@@ -17,6 +17,9 @@ import {JSEncrypt} from "jsencrypt";
 })
 export class AuthenticationService {
   appInfo = null;
+  keyPairs = null;
+  encryptor = null;
+  decryptor = null;
 
   constructor(
     // private authService: SocialAuthService,
@@ -35,21 +38,41 @@ export class AuthenticationService {
     }*/
   }
 
+  createPairKeys() {
+    this.keyPairs = keypair();
+    console.log(this.keyPairs);
+    this.decryptor = new JSEncrypt({ 'default_key_size': '2048' });
+    this.decryptor.setKey(this.keyPairs.private);
+  }
+
+  setEncryptor(publicKey) {
+    this.encryptor = new JSEncrypt({ 'default_key_size': '2048' });
+    this.encryptor.setKey(publicKey);
+  }
+
+  encrypt(rawText): string {
+    if(this.encryptor)
+      return this.encryptor.encrypt(rawText);
+    return null;
+  }
+
+  decrypt(encryptedText): string {
+    if(this.decryptor)
+      return this.decryptor.decrypt(encryptedText);
+    return null;
+  }
+
   async getAppInfo() {
-    var pair = keypair();
-    console.log(pair);
-    let res = await axios.post('api/app-info', { 'public-key': pair.public }, {headers: {}});
+    let res = await axios.post('api/app-info', { 'public-key': this.keyPairs.public }, {headers: {}});
     if (res.status === 200) {
       console.log(res['data'])
       this.appInfo = res['data'];
 
       console.log(res['data']['siteInfo']['title'])
-      let encrypt = new JSEncrypt({ 'default_key_size': '2048' });
-      encrypt.setKey(pair.private);
-      console.log(encrypt.decrypt(res['data']['siteInfo']['title']));
+      console.log(this.decryptor.decrypt(res['data']['siteInfo']['title']));
 
-      // console.log(appInfo);
-      // console.log(JSON.stringify(appInfo));
+      console.log(res['data']['publicKey'])
+      this.setEncryptor(res['data']['publicKey']);
       console.log(this.pianaStorageService.getObject('appInfo'));
       console.log(localStorage.getItem('appInfo'));
 

@@ -12,6 +12,7 @@ export class InitializerService {
     private authenticationService: AuthenticationService) { }
 
   load(): Promise<any> {
+    this.authenticationService.createPairKeys();
     return this.authenticationService.getAppInfo();
     // return new Promise((resolve, reject) => {
     //   axios.post('api/app-info', {}, {headers: {}}).then(res => {

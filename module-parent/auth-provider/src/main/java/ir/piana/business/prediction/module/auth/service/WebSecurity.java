@@ -2,6 +2,7 @@ package ir.piana.business.prediction.module.auth.service;
 
 import ir.piana.business.prediction.common.data.cache.AppDataCache;
 import ir.piana.business.prediction.common.model.ResponseModel;
+import ir.piana.business.prediction.module.auth.action.AuthAction;
 import ir.piana.business.prediction.module.auth.data.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -68,6 +69,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private AuthAction authAction;
+
     //https://www.logicbig.com/tutorials/spring-framework/spring-boot/jdbc-security-with-h2-console.html
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -80,6 +84,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                     .headers().frameOptions().disable()
                     .and()
                     .addFilterBefore(new JWTAuthenticationFilter("/api/sign-in",
+                                    authAction,
                                     authenticationManager(), bCryptPasswordEncoder,
                                     googleUserRepository,
                                     crossDomainAuthenticationService, appDataCache, env),
@@ -140,6 +145,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 //                        CustomAuthenticationFilter.class)
 //                .addFilter(new CustomAuthenticationFilter(authenticationManager()))
                 .addFilterBefore(new JWTAuthenticationFilter("/api/sign-in",
+                                authAction,
                                 authenticationManager(), bCryptPasswordEncoder,
                                 googleUserRepository,
                                 crossDomainAuthenticationService, appDataCache, env),
