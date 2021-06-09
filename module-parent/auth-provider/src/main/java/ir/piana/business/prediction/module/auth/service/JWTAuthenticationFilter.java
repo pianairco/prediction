@@ -11,6 +11,7 @@ import com.google.api.services.oauth2.model.Userinfo;
 import ir.piana.business.prediction.common.data.cache.AppDataCache;
 import ir.piana.business.prediction.common.exceptions.HttpCommonRuntimeException;
 import ir.piana.business.prediction.common.util.CommonUtils;
+import ir.piana.business.prediction.common.util.CryptographyUtil;
 import ir.piana.business.prediction.module.auth.action.AuthAction;
 import ir.piana.business.prediction.module.auth.data.entity.UserEntity;
 import ir.piana.business.prediction.module.auth.data.repository.UserRepository;
@@ -30,12 +31,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.*;
 
 public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
@@ -183,8 +189,13 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
                     return byGoogle(loginInfo.getAccessToken(), host);
                 else if(loginInfo != null && !CommonUtils.isNull(loginInfo.getUsername())) {
                     Captcha sessionCaptcha = (Captcha)request.getSession().getAttribute("simpleCaptcha");
+                    RsaKeyContainer rsaKeyContainer = (RsaKeyContainer) request.getSession()
+                            .getAttribute("rsa-key-container");
+
+                    String decrypt = authAction.decrypt(rsaKeyContainer, loginInfo.getPassword());
+
                     return byForm(
-                            loginInfo.getUsername(), loginInfo.getPassword(), loginInfo.getCaptcha(), sessionCaptcha, host);
+                            loginInfo.getUsername(), decrypt, loginInfo.getCaptcha(), sessionCaptcha, host);
                 } else {
                     throw new RuntimeException();
                 }

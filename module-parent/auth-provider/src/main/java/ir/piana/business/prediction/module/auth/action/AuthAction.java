@@ -5,6 +5,7 @@ import ir.piana.business.prediction.common.util.CryptographyUtil;
 import ir.piana.business.prediction.common.util.PKCS1ToSubjectPublicKeyInfo;
 import ir.piana.business.prediction.module.auth.data.entity.UserEntity;
 import ir.piana.business.prediction.module.auth.model.AppInfo;
+import ir.piana.business.prediction.module.auth.model.RsaKeyContainer;
 import ir.piana.business.prediction.module.auth.model.SiteInfo;
 import ir.piana.business.prediction.module.auth.model.UserModel;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -20,6 +21,7 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -35,7 +37,7 @@ public class AuthAction extends AjaxController.Action {
 
     private Cipher cipher;
     private int keyPairLength = 2;
-    private Map<String, KeyPair> keyPairList = new LinkedHashMap<>();
+    private Map<String, RsaKeyContainer> keyContainerMap = new LinkedHashMap<>();
 
     @PostConstruct
     public void init() throws NoSuchPaddingException, NoSuchAlgorithmException {
@@ -44,7 +46,12 @@ public class AuthAction extends AjaxController.Action {
         try {
             for(int i = 0; i < keyPairLength; i++) {
                 KeyPair keyPair = cryptographyUtil.generateKeyPair();
-                keyPairList.put(String.valueOf(i), keyPair);
+                RsaKeyContainer rsaKeyContainer = RsaKeyContainer.builder()
+                        .keyPair(keyPair)
+                        .base64PrivateKey(Base64.encodeBase64String(keyPair.getPrivate().getEncoded()))
+                        .base64PublicKey(Base64.encodeBase64String(keyPair.getPublic().getEncoded()))
+                        .build();
+                keyContainerMap.put(String.valueOf(i), rsaKeyContainer);
             }
         } catch (NoSuchProviderException e) {
             e.printStackTrace();
@@ -69,41 +76,36 @@ public class AuthAction extends AjaxController.Action {
         return rsaPublicKey;
     }
 
+    public String decrypt(RsaKeyContainer rsaKeyContainer, String encrypted) {
+        try {
+            byte[] decrypt = cryptographyUtil.decrypt(rsaKeyContainer.getKeyPair().getPrivate().getEncoded(), encrypted.getBytes());
+            return new String(decrypt);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     public AppInfo getAppInfo(HttpServletRequest request, Map<String, Object> body) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         // ToDo => appInfo setter
         String host = (String) request.getAttribute("host");
         String tenant = (String) request.getAttribute("tenant");
 
-        String encryptedPublicKey = null;
-        KeyPair keyPair = null;
+        RsaKeyContainer rsaKeyContainer = null;
         if(body != null && body.containsKey("public-key")) {
             try {
                 if(request.getSession().getAttribute("key-pair") == null) {
-                    keyPair = keyPairList.get(String.valueOf(System.currentTimeMillis() % keyPairLength));
-                    request.getSession().setAttribute("key-pair", keyPair);
+                    rsaKeyContainer = keyContainerMap.get(String.valueOf(System.currentTimeMillis() % keyPairLength));
+                    request.getSession().setAttribute("rsa-key-container", rsaKeyContainer);
                 } else {
-                    keyPair = (KeyPair) request.getSession().getAttribute("key-pair");
+                    rsaKeyContainer = (RsaKeyContainer) request.getSession().getAttribute("rsa-key-container");
                 }
 
                 String rawPublicKey = (String) body.get("public-key");
                 RSAPublicKey rsaPublicKey = createPublicKey(rawPublicKey);
                 request.getSession().setAttribute("public-key", rsaPublicKey);
-                /*String publicKeyString = rawPublicKey.replace("-----END RSA PUBLIC KEY-----", "")
-                        .replace("-----BEGIN RSA PUBLIC KEY-----", "")
-                        .replaceAll("\n", "").replaceAll("\r", "").trim();
-                BASE64Decoder b64 = new BASE64Decoder();
-                RSAPublicKey rsaPublicKey = PKCS1ToSubjectPublicKeyInfo.decodePKCS1PublicKey(b64.decodeBuffer(publicKeyString));*/
-
                 cipher.init(Cipher.ENCRYPT_MODE, rsaPublicKey);
-                byte[] encoded = keyPair.getPublic().getEncoded();
-//                byte[] bytes1 = Arrays.copyOfRange(encoded, 0, 200);
-//                byte[] bytes2 = Arrays.copyOfRange(encoded, 200, encoded.length - 200);
-//                byte[] encryptedBytes1 = cipher.doFinal(bytes1);
-                byte[] encryptedBytes = cipher.doFinal(encoded);
-//                byte[] encryptedBytes2 = cipher.doFinal(bytes2);
-                encryptedPublicKey = Base64.encodeBase64String(encryptedBytes);
-//                encryptedPublicKey = Base64.encodeBase64String(encryptedBytes1) + ":" + Base64.encodeBase64String(encryptedBytes2);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -125,7 +127,7 @@ public class AuthAction extends AjaxController.Action {
                     .username(userEntity.getMobile())
                     .email(userEntity.getEmail())
                     .pictureUrl(userEntity.getPictureUrl())
-                    .publicKey(encryptedPublicKey)
+                    .publicKey(rsaKeyContainer.getBase64PublicKey())
                     .build();
             appInfo.setSiteInfo(SiteInfo.builder()
                     .title("prediction")
@@ -143,7 +145,7 @@ public class AuthAction extends AjaxController.Action {
                     .isLoggedIn(false)
                     .isAdmin(false)
                     .username(authentication.getName())
-                    .publicKey(encryptedPublicKey)
+                    .publicKey(rsaKeyContainer.getBase64PublicKey())
                     .build();
             appInfo.setSiteInfo(SiteInfo.builder()
                     .title("prediction")
@@ -174,3 +176,4 @@ public class AuthAction extends AjaxController.Action {
 //        return new ResponseEntity("Failed!", responseHeaders, HttpStatus.valueOf(200));
     };
 }
+

@@ -137,6 +137,7 @@ export class AuthenticationService {
     password: '',
     captcha: ''
   }) {
+    loginInfo.password = this.encryptor.encrypt(loginInfo.password);
     try {
       let res = await axios.post('api/sign-in', loginInfo, {headers: {'auth-type': 'form'}});
       console.log(res);
