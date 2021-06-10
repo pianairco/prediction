@@ -137,9 +137,10 @@ export class AuthenticationService {
     password: '',
     captcha: ''
   }) {
-    loginInfo.password = this.encryptor.encrypt(loginInfo.password);
+    let model = JSON.parse(JSON.stringify(loginInfo))
+    model.password = this.encryptor.encrypt(model.password);
     try {
-      let res = await axios.post('api/sign-in', loginInfo, {headers: {'auth-type': 'form'}});
+      let res = await axios.post('api/sign-in', model, {headers: {'auth-type': 'form'}});
       console.log(res);
       this.appInfo = res['data'];
       // console.log(appInfo);

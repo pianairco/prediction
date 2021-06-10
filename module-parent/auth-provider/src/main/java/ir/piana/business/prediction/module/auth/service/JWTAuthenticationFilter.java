@@ -211,7 +211,7 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
-        AppInfo appInfo = authAction.getAppInfo(request, null);
+        AppInfo appInfo = authAction.getAppInfo(request, null, auth);
         /*SecurityContextHolder.getContext().setAuthentication(auth);
         UserEntity userEntity = ((UserModel)auth.getPrincipal()).getUserEntity();
 //        GoogleUserEntity userEntity = googleUserRepository.findByEmail(((User) auth.getPrincipal()).getUsername());

@@ -78,7 +78,9 @@ public class AuthAction extends AjaxController.Action {
 
     public String decrypt(RsaKeyContainer rsaKeyContainer, String encrypted) {
         try {
-            byte[] decrypt = cryptographyUtil.decrypt(rsaKeyContainer.getKeyPair().getPrivate().getEncoded(), encrypted.getBytes());
+            byte[] decrypt = cryptographyUtil.decrypt(
+                    rsaKeyContainer.getKeyPair().getPrivate().getEncoded(),
+                    Base64.decodeBase64(encrypted));
             return new String(decrypt);
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,22 +88,24 @@ public class AuthAction extends AjaxController.Action {
         return "";
     }
 
-    public AppInfo getAppInfo(HttpServletRequest request, Map<String, Object> body) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // ToDo => appInfo setter
+    public String encrypt(RsaKeyContainer rsaKeyContainer, String rawText) {
+        try {
+            byte[] decrypt = cryptographyUtil.encrypt(rsaKeyContainer.getKeyPair().getPublic().getEncoded(), rawText.getBytes());
+            return new String(decrypt);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public AppInfo getAppInfo(HttpServletRequest request, Map<String, Object> body, Authentication authentication) {
         String host = (String) request.getAttribute("host");
         String tenant = (String) request.getAttribute("tenant");
 
+        // ToDo => appInfo setter
         RsaKeyContainer rsaKeyContainer = null;
         if(body != null && body.containsKey("public-key")) {
             try {
-                if(request.getSession().getAttribute("key-pair") == null) {
-                    rsaKeyContainer = keyContainerMap.get(String.valueOf(System.currentTimeMillis() % keyPairLength));
-                    request.getSession().setAttribute("rsa-key-container", rsaKeyContainer);
-                } else {
-                    rsaKeyContainer = (RsaKeyContainer) request.getSession().getAttribute("rsa-key-container");
-                }
-
                 String rawPublicKey = (String) body.get("public-key");
                 RSAPublicKey rsaPublicKey = createPublicKey(rawPublicKey);
                 request.getSession().setAttribute("public-key", rsaPublicKey);
@@ -112,6 +116,12 @@ public class AuthAction extends AjaxController.Action {
         }
         AppInfo appInfo = null;
 
+        if(request.getSession().getAttribute("rsa-key-container") == null) {
+            rsaKeyContainer = keyContainerMap.get(String.valueOf(System.currentTimeMillis() % keyPairLength));
+            request.getSession().setAttribute("rsa-key-container", rsaKeyContainer);
+        } else {
+            rsaKeyContainer = (RsaKeyContainer) request.getSession().getAttribute("rsa-key-container");
+        }
         if(authentication.getPrincipal() instanceof UserModel) {
             UserEntity userEntity = ((UserModel) authentication.getPrincipal()).getUserEntity();
             appInfo = AppInfo.builder()
@@ -161,6 +171,11 @@ public class AuthAction extends AjaxController.Action {
         }
 
         return appInfo;
+    }
+
+    public AppInfo getAppInfo(HttpServletRequest request, Map<String, Object> body) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return getAppInfo(request, body, authentication);
     }
 
     public BiFunction<HttpServletRequest, Map<String, Object>, ResponseEntity> appInfo = (request, body) -> {
