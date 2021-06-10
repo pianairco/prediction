@@ -38,15 +38,15 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest req,
                                     HttpServletResponse res,
                                     FilterChain chain) throws IOException, ServletException {
-        String username = (String) req.getSession().getAttribute("authorization");
-        if (username == null) {
+        String bearer = req.getHeader("Authorization");
+        /*if (bearer == null) {
             chain.doFilter(req, res);
         } else {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     username, null, new ArrayList<>());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(req, res);
-        }
+        }*/
     }
 
 //    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {

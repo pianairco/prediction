@@ -18,10 +18,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.session.SessionManagementFilter;
 
+import javax.servlet.Filter;
 import java.util.Arrays;
 
 @Configuration
@@ -71,6 +74,10 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthAction authAction;
+
+    @Autowired
+    @Qualifier("springSecurityFilterChain")
+    private Filter springSecurityFilterChain;
 
     //https://www.logicbig.com/tutorials/spring-framework/spring-boot/jdbc-security-with-h2-console.html
     @Override
@@ -150,8 +157,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                                 googleUserRepository,
                                 crossDomainAuthenticationService, appDataCache, env),
                         UsernamePasswordAuthenticationFilter.class)
-//                .addFilterBefore(new JWTAuthorizationFilter(authenticationManager(), authTokenModelRepository),
-//                        UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JWTAuthorizationFilter(authenticationManager()),
+                        SessionManagementFilter.class)
 //                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
 //                 this disables session creation on Spring Security
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);

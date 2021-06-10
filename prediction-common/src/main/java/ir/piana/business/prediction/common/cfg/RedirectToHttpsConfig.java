@@ -10,7 +10,7 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+//@Configuration
 //@Profile("product")
 public class RedirectToHttpsConfig {
     @Value("${server.port}")
