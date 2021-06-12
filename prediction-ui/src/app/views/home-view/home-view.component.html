@@ -18,13 +18,13 @@
           <a class="btn btn-primary mx-1"
              [routerLink]="['/tile/weekly-matches-score', w.id]"
              routerLinkActive="menu-active-link">رنکینگ</a>
-          <a class="btn btn-warning mx-1" *ngIf="authService.isAdmin() && w.statusId == 2"
-             [routerLink]="['/tile/weekly-matches-result', w.id]"
-             routerLinkActive="menu-active-link">ثبت نتیجه</a>
-          <biutton class="btn btn-danger mx-1"
-                   *ngIf="authService.isAdmin() && w.statusId == 1"
-             (click)="close(w.id)"
-             routerLinkActive="menu-active-link">بستن</biutton>
+<!--          <a class="btn btn-warning mx-1" *ngIf="authService.isAdmin() && w.statusId == 2"-->
+<!--             [routerLink]="['/tile/weekly-matches-result', w.id]"-->
+<!--             routerLinkActive="menu-active-link">ثبت نتیجه</a>-->
+<!--          <biutton class="btn btn-danger mx-1"-->
+<!--                   *ngIf="authService.isAdmin() && w.statusId == 1"-->
+<!--             (click)="close(w.id)"-->
+<!--             routerLinkActive="menu-active-link">بستن</biutton>-->
         </div>
       </div>
     </div>

@@ -177,13 +177,13 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
                     (request.getContentType().startsWith("APPLICATION/JSON") ||
                             request.getContentType().startsWith("application/json"))) {
                 LoginInfo loginInfo = new ObjectMapper().readValue(request.getInputStream(), LoginInfo.class);
-                /*if(Arrays.stream(env.getActiveProfiles()).anyMatch(p -> "develop".matches(p))) {
+                if(Arrays.stream(env.getActiveProfiles()).anyMatch(p -> "develop".matches(p))) {
                     return byForm(
                             "09128855402",
-                            "0000",
+                            "Diana@Piana.ir",
                             null,
                             null, host);
-                }*/
+                }
 
                 if (loginInfo != null && !CommonUtils.isNull(loginInfo.getAccessToken()))
                     return byGoogle(loginInfo.getAccessToken(), host);
@@ -211,6 +211,7 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
+        SecurityContextHolder.getContext().setAuthentication(auth);
         AppInfo appInfo = authAction.getAppInfo(request, null, auth);
         /*SecurityContextHolder.getContext().setAuthentication(auth);
         UserEntity userEntity = ((UserModel)auth.getPrincipal()).getUserEntity();

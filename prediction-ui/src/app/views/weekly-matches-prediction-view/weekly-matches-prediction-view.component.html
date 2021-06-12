@@ -42,6 +42,10 @@
              style="text-align: center"
              [(ngModel)]="w.guestGoals">
     </div>
+<!--    <a class="btn btn-warning mx-1" *ngIf="authService.isAdmin() && w.statusId == 2"-->
+    <a class="btn btn-warning mx-1" *ngIf="authService.isAdmin()"
+       [routerLink]="['/tile/weekly-matches-result', w.competitionId]"
+       routerLinkActive="menu-active-link">ثبت نتیجه</a>
   </div>
 
   <div class="row justify-content-center py-4">

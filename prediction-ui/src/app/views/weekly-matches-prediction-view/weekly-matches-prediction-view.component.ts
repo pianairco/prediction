@@ -12,6 +12,7 @@ import {ScreenSizeService} from "../../services/screen-size.service";
 import {WeeklyMatchesCompetitionPredictionService} from "../../services/weekly-mathes-competition-prediction.service";
 import {LoginDialog} from "../login/login.component";
 import {MatDialog} from "@angular/material/dialog";
+import {AuthenticationService} from "../../services/authentication-service.service";
 
 @Component({
   selector: 'app-weekly-matches-prediction-view',
@@ -30,6 +31,7 @@ export class WeeklyMatchesPredictionComponent implements OnInit {
     private route: ActivatedRoute,
     private pianaStorageService: PianaStorageService,
     private restClientService: RestClientService,
+    public authService: AuthenticationService,
     public weeklyMatchesCompetitionPredictionService: WeeklyMatchesCompetitionPredictionService,
     private siteCategoryService: SiteCategoryService) {
     weeklyMatchesCompetitionPredictionService.weeklyMatchCompetitionModelsSubject.subscribe(
