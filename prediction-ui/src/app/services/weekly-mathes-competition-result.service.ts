@@ -48,7 +48,12 @@ export class WeeklyMatchesCompetitionResultService {
   }
 
   register(competitionResultModel: CompetitionResultModel) {
-    this.restClientService.registerCompetitionResult(competitionResultModel);
+    this.restClientService.registerCompetitionResult(competitionResultModel).then(res => {
+      console.log(res, res.data)
+      this.competitionResultModels = res.data;
+    }, err => {
+
+    });
   }
 
   registerAll(competitionResultModels: CompetitionResultModel[]) {

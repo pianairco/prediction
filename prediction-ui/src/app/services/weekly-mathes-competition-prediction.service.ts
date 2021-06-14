@@ -42,6 +42,31 @@ export class WeeklyMatchesCompetitionPredictionService {
     });
   }
 
+  registerPrediction(predictingMatchesModel: PredictingMatchesModel) {
+    this.restClientService.registerWeeklyMatchesPrediction(predictingMatchesModel)
+      .then(res => {
+        console.log(res.data)
+        console.log(this.weeklyMatchCompetitionModels)
+        let index = -1;
+        for(let i = 0; i < this._weeklyMatchCompetitionModel.length; i++) {
+          if(this._weeklyMatchCompetitionModel[i].predictionId = res.data.predictionId) {
+            index = i;
+            break;
+          }
+        }
+        console.log(index)
+        // this._weeklyMatchCompetitionModel
+        // this.pianaStorageService.putObject("rootCategory", res.data.data);
+        // this.weeklyMatchCompetitionModels = res.data;
+      }, err => {
+        console.log(err);
+      });
+  }
+
+  get weeklyMatchCompetitionModels() {
+    return this._weeklyMatchCompetitionModel;
+  }
+
   set weeklyMatchCompetitionModels(_weeklyMatchCompetitionModel) {
     this._weeklyMatchCompetitionModel = _weeklyMatchCompetitionModel;
     console.log(this._weeklyMatchCompetitionModel)
@@ -84,5 +109,6 @@ export class WeeklyMatchCompetitionModel {
   hostGoals: number;
   guestGoals: number;
   registeringTime: number;
+  isLocked: boolean;
 };
 

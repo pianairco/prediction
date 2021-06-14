@@ -58,6 +58,20 @@ export class WeeklyMatchesResultComponent implements OnInit {
       this.competitionResultService.fetchCompetitions(this.weeklyMatchesId);
     });
   }
+  checkIfStarted (competitionModel: WeeklyMatchCompetitionModel) {
+    if(competitionModel.hostGoals == null && competitionModel.guestGoals == null)
+      return false;
+    else if(competitionModel.hostGoals >= 0 && competitionModel.guestGoals >= 0)
+      return true;
+    return false;
+  }
+
+  start(competitionModel: WeeklyMatchCompetitionModel) {
+    this.competitionResultService.register(
+      new CompetitionResultModel(
+        this.weeklyMatchesId, competitionModel.competitionId,
+        0, 0, 0));
+  }
 
   register(competitionModel: WeeklyMatchCompetitionModel) {
     this.competitionResultService.register(
@@ -86,8 +100,8 @@ export class WeeklyMatchesResultComponent implements OnInit {
   checkForChange(model: WeeklyMatchCompetitionModel) {
     for(let fixed of this.fixedWeeklyMatchCompetitions) {
       if(fixed.competitionId == model.competitionId) {
-        if(model.registeringTime > fixed.registeringTime &&
-          (model.hostGoals > fixed.hostGoals || model.guestGoals > fixed.guestGoals))
+        if(model.registeringTime > fixed.registeringTime /*||
+          (model.registeringTime > fixed.registeringTime && model.hostGoals > fixed.hostGoals || model.guestGoals > fixed.guestGoals)*/)
           return true;
         return false;
       }

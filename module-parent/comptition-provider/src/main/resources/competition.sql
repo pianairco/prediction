@@ -163,7 +163,7 @@ INSERT INTO competition_status (id, title, title_en) select * from (
     select 2 id, 'شروع بازی' title, 'start_matches' title_en union
     select 3 id, 'امتیاز دهی' title, 'scoring' title_en union
     select 4 id, 'پایان' title, 'end' title_en
-) where not exists(select * from weekly_match_status);
+) where not exists(select * from competition_status);
 
 CREATE TABLE IF NOT EXISTS weekly_matches_competition (
     id bigint primary key,
@@ -171,6 +171,7 @@ CREATE TABLE IF NOT EXISTS weekly_matches_competition (
     competition_status_id bigint,
     host_team_id bigint,
     guest_team_id bigint,
+    tags varchar(256),
     date char(10),
     time char(5),
     constraint fk_weekly_matches_competition_2_weekly_matches_by_weekly_matches_id FOREIGN KEY (weekly_matches_id) REFERENCES weekly_matches(id),
@@ -179,7 +180,7 @@ CREATE TABLE IF NOT EXISTS weekly_matches_competition (
     constraint fk_weekly_matches_competition_2_team_by_guest_team_id FOREIGN KEY (guest_team_id) REFERENCES team(id)
 );
 
-INSERT INTO weekly_matches_competition (id, weekly_matches_id, host_team_id, guest_team_id, date, time) select * from (
+INSERT INTO weekly_matches_competition (id, weekly_matches_id, competition_status_id, host_team_id, guest_team_id, date, time) select * from (
     select 1 id, 1 weekly_matches_id, 1 competition_status_id, 7 host_team_id, 12 guest_team_id, '1400/03/27' date, '19:00' time  union
     select 2, 1, 1, 1, 14, '1400/03/27', '19:00' union
     select 3, 1, 1, 3, 4, '1400/03/27', '19:00' union
@@ -188,8 +189,8 @@ INSERT INTO weekly_matches_competition (id, weekly_matches_id, host_team_id, gue
     select 6, 1, 1, 15, 6, '1400/03/27', '19:00' union
     select 7, 1, 1, 13, 10, '1400/03/27', '19:00' union
     select 8, 1, 1, 5, 8, '1400/03/27', '19:00' union
-    select 9, 1, 2, 20, 19, '1400/03/13', '19:00' union
-    select 10, 1, 2, 18, 21, '1400/03/13', '21:00'
+    select 9, 2, 2, 20, 19, '1400/03/13', '19:00' union
+    select 10, 2, 2, 18, 21, '1400/03/13', '21:00'
 ) where not exists(select * from weekly_matches_competition);
 
 CREATE TABLE IF NOT EXISTS prediction_result (

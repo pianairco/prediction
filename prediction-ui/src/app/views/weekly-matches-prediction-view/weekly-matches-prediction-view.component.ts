@@ -65,6 +65,11 @@ export class WeeklyMatchesPredictionComponent implements OnInit {
     this.weeklyMatchesCompetitionPredictionService.register(predictingMatchesModel)
   }
 
+  registerPrediction(prediction: WeeklyMatchCompetitionModel) {
+    this.weeklyMatchesCompetitionPredictionService.registerPrediction(new PredictingMatchesModel(
+      this.weeklyMatchesId, prediction.competitionId, prediction.predictionId, prediction.hostGoals, prediction.guestGoals))
+  }
+
   reset() {
     console.log(this.weeklyMatchesCompetitionPredictionService.weeklyMatchCompetitionModels)
     this.weeklyMatchesCompetitionPredictionService.sameEmit();

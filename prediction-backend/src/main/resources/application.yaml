@@ -57,3 +57,4 @@ database:
   packages-to-scan:
     - ir.piana.business.prediction.common.data.entity
     - ir.piana.business.prediction.module.**.data.entity
+    - ir.piana.business.prediction.module.**.data.view

@@ -61,6 +61,11 @@ export class RestClientService {
     return this.ajaxCallService.read(this.ajaxUrlMap.weeklyMatches + '/results?weeklyMatchesId=' + weeklyMatchesId);
   }
 
+  registerWeeklyMatchesPrediction(predictingMatchesModel: PredictingMatchesModel) {
+    return this.ajaxCallService.save(
+      this.ajaxUrlMap.weeklyMatches + '/predicting-match', predictingMatchesModel);
+  }
+
   registerWeeklyMatchesPredictions(predictingMatchesModels: PredictingMatchesModel[]) {
     return this.ajaxCallService.save(
       this.ajaxUrlMap.weeklyMatches + '/predicting-matches', predictingMatchesModels);

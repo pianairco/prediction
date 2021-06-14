@@ -1,1 +1,2 @@
-POST http://localhost/test/api/zarinpal/test/redirect
+POST https://localhost:8443/api/modules/competition/weekly-matches/competition-list?weeklyMatchesId=1
+

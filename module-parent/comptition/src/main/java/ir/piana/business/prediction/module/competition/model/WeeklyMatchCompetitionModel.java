@@ -1,5 +1,6 @@
 package ir.piana.business.prediction.module.competition.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,10 +17,15 @@ public class WeeklyMatchCompetitionModel {
     private long hostTeamId;
     private String hostTeamName;
     private String hostTeamLogo;
-    private long hostGoals;
+    private Long hostGoals;
     private long guestTeamId;
     private String guestTeamName;
     private String guestTeamLogo;
-    private long guestGoals;
-    private long registeringTime;
+    private Long guestGoals;
+    private Long registeringTime;
+    private String[] tags;
+    private Long registeredHostGoals;
+    private Long registeredGuestGoals;
+    @JsonProperty("isLocked")
+    private boolean isLocked;
 }

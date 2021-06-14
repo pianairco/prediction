@@ -84,5 +84,6 @@ export class WeeklyMatchCompetitionModel {
   hostGoals: number;
   guestGoals: number;
   registeringTime: number;
+  isLocked: number;
 };
 

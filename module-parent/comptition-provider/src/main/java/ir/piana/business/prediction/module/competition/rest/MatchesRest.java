@@ -91,6 +91,9 @@ public class MatchesRest {
                             userEntity.getId(),
                             Arrays.asList(weeklyMatchId));
 
+            List<WeeklyMatchesCompetitionResultEntity> lastResults = competitionResultRepository
+                    .findLastResults(weeklyMatchId);
+
             for(WeeklyMatchesCompetitionEntity competitionEntity : weeklyMatchesCompetitions) {
                 Optional<WeeklyMatchesCompetitionPredictionEntity> any = registered.stream()
                         .filter(p -> p.getCompetitionEntity().getId() == competitionEntity.getId())
@@ -99,6 +102,9 @@ public class MatchesRest {
                         .findById(competitionEntity.getHostTeamId());
                 Optional<TeamEntity> guestTeamEntity = teamRepository
                         .findById(competitionEntity.getGuestTeamId());
+                Optional<WeeklyMatchesCompetitionResultEntity> ifResult = lastResults.stream()
+                        .filter(r -> r.getCompetitionEntity().getId() == competitionEntity.getId()).findAny();
+
                 if(!any.isPresent()) {
                     competitionModels.add(WeeklyMatchCompetitionModel.builder()
                             .organizer(guestTeamEntity.get().getLeagueOrganizerEntity().getNameEn())
@@ -109,6 +115,7 @@ public class MatchesRest {
                             .guestTeamId(guestTeamEntity.get().getId())
                             .guestTeamName(guestTeamEntity.get().getName())
                             .guestTeamLogo(guestTeamEntity.get().getLogo())
+                            .isLocked(ifResult.isPresent())
                             .build());
                 } else {
                     competitionModels.add(WeeklyMatchCompetitionModel.builder()
@@ -123,6 +130,7 @@ public class MatchesRest {
                             .guestTeamId(guestTeamEntity.get().getId())
                             .guestTeamName(guestTeamEntity.get().getName())
                             .guestTeamLogo(guestTeamEntity.get().getLogo())
+                            .isLocked(ifResult.isPresent())
                             .build());
                 }
             }
@@ -229,15 +237,20 @@ public class MatchesRest {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<WeeklyMatchCompetitionModel>> getWeeklyMatchesCompetitionResults(
             @RequestParam("weeklyMatchesId") long weeklyMatchId) {
+        List<WeeklyMatchCompetitionModel> competitionModels = new ArrayList<>();
         List<WeeklyMatchesCompetitionResultEntity> resultEntities = competitionResultRepository
                 .findLastResults(weeklyMatchId);
 
         Optional<WeeklyMatchesEntity> byId = weeklyMatchesRepository.findById(weeklyMatchId);
         String organizerName = byId.get().getSeasonEntity().getLeagueEntity().getLeagueOrganizerEntity().getNameEn();
 
-        List<WeeklyMatchCompetitionModel> competitionModels = new ArrayList<>();
-        if(resultEntities != null && !resultEntities.isEmpty()) {
-            for(WeeklyMatchesCompetitionResultEntity resultEntity : resultEntities) {
+        List<WeeklyMatchesCompetitionEntity> competitionsByWeeklyMatchId = competitionRepository
+                .findAllByWeeklyMatchesId(weeklyMatchId);
+
+        for(WeeklyMatchesCompetitionEntity competitionEntity : competitionsByWeeklyMatchId) {
+            WeeklyMatchesCompetitionResultEntity resultEntity = resultEntities.stream()
+                    .filter(r -> r.getCompetitionEntity().getId() == competitionEntity.getId()).findAny().orElse(null);
+            if(resultEntity != null) {
                 Optional<TeamEntity> hostTeamEntity = teamRepository
                         .findById(resultEntity.getCompetitionEntity().getHostTeamId());
                 Optional<TeamEntity> guestTeamEntity = teamRepository
@@ -255,7 +268,26 @@ public class MatchesRest {
                         .guestGoals(resultEntity.getGuestGoals())
                         .registeringTime(resultEntity.getRegisteringTime())
                         .build());
+            } else {
+                Optional<TeamEntity> hostTeamEntity = teamRepository
+                        .findById(competitionEntity.getHostTeamId());
+                Optional<TeamEntity> guestTeamEntity = teamRepository
+                        .findById(competitionEntity.getGuestTeamId());
+                competitionModels.add(WeeklyMatchCompetitionModel.builder()
+                        .organizer(organizerName)
+                        .competitionId(competitionEntity.getId())
+                        .hostTeamId(hostTeamEntity.get().getId())
+                        .hostTeamLogo(hostTeamEntity.get().getLogo())
+                        .hostTeamName(hostTeamEntity.get().getName())
+                        .hostGoals(null)
+                        .guestTeamId(guestTeamEntity.get().getId())
+                        .guestTeamName(guestTeamEntity.get().getName())
+                        .guestTeamLogo(guestTeamEntity.get().getLogo())
+                        .guestGoals(null)
+                        .registeringTime(0l)
+                        .build());
             }
+
         }
         return ResponseEntity.ok(competitionModels);
     }
@@ -285,15 +317,16 @@ public class MatchesRest {
     @PostMapping(path = "matches-result",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CompetitionResultModel>> matchesResult(
+    public ResponseEntity<List<WeeklyMatchCompetitionModel>> matchesResult(
             @RequestBody CompetitionResultModel model) {
         WeeklyMatchesCompetitionResultEntity lastResult = competitionResultRepository
-                .findLastResult(model.getCompetitionId());
-        if(lastResult.getRegisteringTime() == model.getRegisteringTime()) {
-            lastResult.setHostGoals(model.getHostGoals());
-            lastResult.setGuestGoals(model.getGuestGoals());
-            competitionResultRepository.save(lastResult);
-            return getCompetitionResults(model.getWeeklyMatchId());
+                .findLastResult(model.getCompetitionId()).get();
+        if(lastResult != null) {
+            if (lastResult.getRegisteringTime() == model.getRegisteringTime()) {
+                lastResult.setHostGoals(model.getHostGoals());
+                lastResult.setGuestGoals(model.getGuestGoals());
+                competitionResultRepository.save(lastResult);
+                return getWeeklyMatchesCompetitionResults(model.getWeeklyMatchId());
             /*return ResponseEntity.ok(CompetitionResultModel.builder()
                     .competitionId(lastResult.getCompetitionEntity().getId())
                     .weeklyMatchId(lastResult.getCompetitionEntity().getWeeklyMatchesId())
@@ -301,12 +334,12 @@ public class MatchesRest {
                     .hostGoals(lastResult.getHostGoals())
                     .registeringTime(lastResult.getRegisteringTime())
                     .build());*/
-        } else if(lastResult.getRegisteringTime() > model.getRegisteringTime() ||
-                lastResult.getHostGoals() > model.getHostGoals() ||
-                lastResult.getGuestGoals() > model.getGuestGoals()) {
-            return ResponseEntity.badRequest().build();
+            } else if (lastResult.getRegisteringTime() > model.getRegisteringTime() ||
+                    lastResult.getHostGoals() > model.getHostGoals() ||
+                    lastResult.getGuestGoals() > model.getGuestGoals()) {
+                return ResponseEntity.badRequest().build();
+            }
         }
-
         WeeklyMatchesCompetitionResultEntity result = WeeklyMatchesCompetitionResultEntity.builder()
                 .competitionEntity(competitionRepository.findById(model.getCompetitionId()).get())
                 .registeringTime(model.getRegisteringTime())
@@ -323,7 +356,7 @@ public class MatchesRest {
                 .hostGoals(result.getHostGoals())
                 .registeringTime(result.getRegisteringTime())
                 .build());*/
-        return getCompetitionResults(model.getWeeklyMatchId());
+        return getWeeklyMatchesCompetitionResults(model.getWeeklyMatchId());
     }
 
     @PostMapping(path = "matches-results",
