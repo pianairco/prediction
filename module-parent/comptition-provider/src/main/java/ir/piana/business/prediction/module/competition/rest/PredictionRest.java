@@ -3,6 +3,7 @@ package ir.piana.business.prediction.module.competition.rest;
 import ir.piana.business.prediction.module.auth.data.entity.UserEntity;
 import ir.piana.business.prediction.module.auth.model.UserModel;
 import ir.piana.business.prediction.module.competition.data.entity.TeamEntity;
+import ir.piana.business.prediction.module.competition.data.entity.WeeklyMatchesCompetitionEntity;
 import ir.piana.business.prediction.module.competition.data.entity.WeeklyMatchesCompetitionPredictionEntity;
 import ir.piana.business.prediction.module.competition.data.entity.WeeklyMatchesCompetitionResultEntity;
 import ir.piana.business.prediction.module.competition.data.repository.*;
@@ -67,37 +68,47 @@ public class PredictionRest {
     public ResponseEntity<WeeklyMatchCompetitionModel> predictingMatches(
             @RequestBody PredictingMatchesModel predictingMatchesModel) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserEntity userEntity = null;
+        final UserEntity userEntity;
         if(authentication.getPrincipal() instanceof UserModel) {
             userEntity = ((UserModel) authentication.getPrincipal()).getUserEntity();
-        }
+        } else
+            userEntity = null;
         long weeklyMatchId = 0;
         if(userEntity == null)
             throw new RuntimeException();
 
 
             weeklyMatchId = predictingMatchesModel.getWeeklyMatchId();
-            Optional<WeeklyMatchesCompetitionPredictionEntity> registeredPrediction = competitionPredictionRepository
+            Optional<WeeklyMatchesCompetitionPredictionEntity> registeredPredictionOptional = competitionPredictionRepository
                     .findByIdAndUserEntity(predictingMatchesModel.getPredictionId(), userEntity);
-            if (registeredPrediction.isPresent()) {
-                registeredPrediction.get().setHostGoals(predictingMatchesModel.getHostGoals());
-                registeredPrediction.get().setGuestGoals(predictingMatchesModel.getGuestGoals());
+        WeeklyMatchesCompetitionPredictionEntity registeredPrediction = null;
+            if (registeredPredictionOptional.isPresent()) {
+                registeredPrediction = registeredPredictionOptional.get();
+                registeredPrediction.setHostGoals(predictingMatchesModel.getHostGoals());
+                registeredPrediction.setGuestGoals(predictingMatchesModel.getGuestGoals());
+            } else {
+                registeredPrediction = WeeklyMatchesCompetitionPredictionEntity.builder()
+                        .competitionEntity(competitionRepository.findById(predictingMatchesModel.getCompetitionId()).get())
+                        .userEntity(userEntity)
+                        .hostGoals(predictingMatchesModel.getHostGoals())
+                        .guestGoals(predictingMatchesModel.getGuestGoals())
+                        .build();
             }
-            competitionPredictionRepository.save(registeredPrediction.get());
+            competitionPredictionRepository.save(registeredPrediction);
 
         Optional<WeeklyMatchesCompetitionResultEntity> lastResult = competitionResultRepository
                 .findLastResult(weeklyMatchId);
         Optional<TeamEntity> guestTeamEntity = teamRepository
-                .findById(registeredPrediction.get().getCompetitionEntity().getGuestTeamId());
+                .findById(registeredPrediction.getCompetitionEntity().getGuestTeamId());
 
         Optional<TeamEntity> hostTeamEntity = teamRepository
-                .findById(registeredPrediction.get().getCompetitionEntity().getHostTeamId());
+                .findById(registeredPrediction.getCompetitionEntity().getHostTeamId());
 
         WeeklyMatchCompetitionModel res = WeeklyMatchCompetitionModel.builder()
                 .isLocked(lastResult.isPresent())
                 .organizer(guestTeamEntity.get().getLeagueOrganizerEntity().getName())
-                .competitionId(registeredPrediction.get().getCompetitionEntity().getId())
-                .predictionId(registeredPrediction.get().getId())
+                .competitionId(registeredPrediction.getCompetitionEntity().getId())
+                .predictionId(registeredPrediction.getId())
                 .hostTeamId(hostTeamEntity.get().getId())
                 .hostTeamLogo(hostTeamEntity.get().getLogo())
                 .hostTeamName(hostTeamEntity.get().getName())
