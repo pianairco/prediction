@@ -83,7 +83,7 @@ export class WeeklyMatchesPredictionComponent implements OnInit {
 
   openDialog() {
     this.dialogOpened = true;
-    const dialogRef = this.dialog.open(PredictionDialog);
+    const dialogRef = this.dialog.open(WeeklyMatchesPredictionDialog);
 
     dialogRef.afterClosed().subscribe(result => {
       this.dialogOpened = false;
@@ -96,4 +96,4 @@ export class WeeklyMatchesPredictionComponent implements OnInit {
   selector: 'app-prediction-dialog',
   templateUrl: 'prediction-dialog.component.html',
 })
-export class PredictionDialog {}
+export class WeeklyMatchesPredictionDialog {}

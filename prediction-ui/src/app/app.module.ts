@@ -28,8 +28,7 @@ import {environment} from "../environments/environment";
 import {WeeklyMatchesComponent} from "./views/weekly-matches-view/weekly-matches-view.component";
 import {WeeklyMatchesResultComponent} from "./views/weekly-matches-result-view/weekly-matches-result-view.component";
 import {
-  PredictionDialog,
-  WeeklyMatchesPredictionComponent
+  WeeklyMatchesPredictionComponent, WeeklyMatchesPredictionDialog
 } from "./views/weekly-matches-prediction-view/weekly-matches-prediction-view.component";
 import {MatchesRankingComponent} from "./views/matches-ranking-view/matches-ranking-view.component";
 import {SigninComponent} from "./views/signin-view/signin.component";
@@ -37,6 +36,7 @@ import {NgxMaskModule} from "ngx-mask";
 import {MatDialogModule} from "@angular/material/dialog";
 import {WeeklyMatchesRankingComponent} from "./views/weekly-matches-ranking/weekly-matches-ranking.component";
 import {WarningDialogComponent} from "./components/warning-dialog/warning-dialog.component";
+import {PredictionComponent, PredictionDialog} from "./views/prediction-view/prediction-view.component";
 
 @NgModule({
   declarations: [
@@ -53,6 +53,8 @@ import {WarningDialogComponent} from "./components/warning-dialog/warning-dialog
     WeeklyMatchesComponent,
     WeeklyMatchesResultComponent,
     WeeklyMatchesPredictionComponent,
+    WeeklyMatchesPredictionDialog,
+    PredictionComponent,
     PredictionDialog,
     WeeklyMatchesRankingComponent,
     MatchesRankingComponent,
